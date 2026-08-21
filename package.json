@@ -1,0 +1,17 @@
+{
+  "name": "wedding-message-screen",
+  "version": "3.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "@upstash/redis": "^1.35.3",
+    "@vercel/blob": "^1.0.2",
+    "express": "^4.21.2",
+    "multer": "^1.4.5-lts.1",
+    "qrcode": "^1.5.4"
+  }
+}
