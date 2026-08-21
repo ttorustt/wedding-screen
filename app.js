@@ -26,10 +26,6 @@ const redis = hasRedis
       token: redisToken
     })
   : null;
-
-fs.mkdirSync(DATA_DIR, { recursive: true });
-fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-
 const defaultState = { background: '', activeMessageId: null, messages: [] };
 function cloneDefault(){ return JSON.parse(JSON.stringify(defaultState)); }
 async function loadState(){
