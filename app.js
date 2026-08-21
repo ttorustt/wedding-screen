@@ -9,14 +9,23 @@ const { put, del } = require('@vercel/blob');
 
 const app = express();
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'wedding2026';
-const PUBLIC_DIR = path.join(__dirname, 'public');
+const PUBLIC_DIR = __dirname;
 const DATA_DIR = path.join(__dirname, 'data');
 const DB_FILE = path.join(DATA_DIR, 'state.json');
 const UPLOAD_DIR = path.join(PUBLIC_DIR, 'uploads');
 const REDIS_KEY = 'wedding-screen:state:v3';
-const hasRedis = !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);
+const redisUrl = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+const redisToken = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+
+const hasRedis = !!(redisUrl && redisToken);
 const hasBlob = !!process.env.BLOB_READ_WRITE_TOKEN;
-const redis = hasRedis ? Redis.fromEnv() : null;
+
+const redis = hasRedis
+  ? new Redis({
+      url: redisUrl,
+      token: redisToken
+    })
+  : null;
 
 fs.mkdirSync(DATA_DIR, { recursive: true });
 fs.mkdirSync(UPLOAD_DIR, { recursive: true });
