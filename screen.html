@@ -3,40 +3,37 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Wedding Screen Diagnostic</title>
+  <title>Wedding Screen Test</title>
 
   <style>
-    html,body{
-      margin:0;
-      width:100%;
-      height:100%;
-      background:#111;
-      color:#fff;
-      font-family:Arial,sans-serif;
-      overflow:hidden;
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      overflow: hidden;
     }
 
-    #photo{
-      position:fixed;
-      inset:0;
-      width:100%;
-      height:100%;
-      object-fit:contain;
-      z-index:1;
+    #photo {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
-    #info{
-      position:fixed;
-      z-index:9999;
-      left:20px;
-      right:20px;
-      bottom:20px;
-      background:rgba(0,0,0,.9);
-      padding:18px;
-      border-radius:12px;
-      font-size:16px;
-      line-height:1.5;
-      word-break:break-all;
+    #info {
+      position: fixed;
+      z-index: 100;
+      left: 20px;
+      right: 20px;
+      bottom: 20px;
+      padding: 18px;
+      background: rgba(0,0,0,.85);
+      color: white;
+      font: 16px Arial, sans-serif;
+      word-break: break-all;
     }
   </style>
 </head>
@@ -44,10 +41,7 @@
 <body>
 
   <img id="photo" alt="">
-
-  <div id="info">
-    Проверяем...
-  </div>
+  <div id="info">Запуск...</div>
 
   <script>
     const photo = document.getElementById('photo');
@@ -64,596 +58,36 @@
         const url = state.background;
 
         info.innerHTML =
-          'URL получен:<br>' + url +
+          'URL получен:<br><br>' +
+          url +
           '<br><br>Ждём загрузку картинки...';
 
-        photo.onload = () => {
+        photo.onload = function () {
           info.innerHTML =
             '✅ КАРТИНКА ЗАГРУЗИЛАСЬ' +
-            '<br>Размер: ' +
+            '<br><br>Размер: ' +
             photo.naturalWidth +
             ' × ' +
-            photo.naturalHeight +
-            '<br><br>URL:<br>' +
-            photo.currentSrc;
+            photo.naturalHeight;
         };
 
-        photo.onerror = () => {
+        photo.onerror = function () {
           info.innerHTML =
-            '❌ ERROR — картинка не загрузилась' +
-            '<br><br>URL:<br>' +
+            '❌ КАРТИНКА НЕ ЗАГРУЗИЛАСЬ' +
+            '<br><br>' +
             url;
         };
 
         photo.src = url;
 
-      } catch (e) {
+      } catch (error) {
         info.innerHTML =
-          '❌ Ошибка API:<br>' +
-          e.message;
+          '❌ ОШИБКА API:<br><br>' +
+          error.message;
       }
     }
 
     run();
-  </script>
-
-</body>
-</html>      display: block;
-
-      opacity: 1;
-    }
-
-    /* Затемнение поверх заставки */
-    .background-overlay {
-      position: fixed;
-      inset: 0;
-
-      z-index: 1;
-
-      pointer-events: none;
-
-      background:
-        linear-gradient(
-          180deg,
-          rgba(0,0,0,.12),
-          rgba(0,0,0,.34)
-        );
-    }
-
-
-    /* =========================
-       ОСНОВНОЙ ЭКРАН
-       ========================= */
-
-    .stage {
-      position: fixed;
-      inset: 0;
-
-      z-index: 2;
-
-      display: grid;
-      place-items: center;
-
-      padding: 7vw;
-
-      pointer-events: none;
-    }
-
-
-    /* =========================
-       ЗАТЕМНЕНИЕ ЗА ТЕКСТОМ
-       ========================= */
-
-    .halo {
-      position: absolute;
-
-      width: 75vw;
-      height: 45vw;
-
-      border-radius: 50%;
-
-      background:
-        radial-gradient(
-          ellipse,
-          rgba(0,0,0,.32),
-          transparent 68%
-        );
-
-      filter: blur(20px);
-
-      opacity: 0;
-
-      transition:
-        opacity .8s ease;
-    }
-
-    .stage.has-message .halo {
-      opacity: 1;
-    }
-
-
-    /* =========================
-       СООБЩЕНИЕ
-       ========================= */
-
-    .message {
-      position: relative;
-
-      max-width: 1500px;
-
-      color: #fff;
-
-      text-align: center;
-
-      font:
-        500
-        clamp(54px,7vw,132px)/.98
-        "Cormorant Garamond",
-        Georgia,
-        serif;
-
-      text-wrap: balance;
-
-      text-shadow:
-        0 6px 40px rgba(0,0,0,.65);
-
-      opacity: 0;
-
-      transform:
-        translateY(42px)
-        scale(.97);
-
-      filter: blur(14px);
-
-      transition:
-        opacity .9s cubic-bezier(.16,1,.3,1),
-        transform 1.05s cubic-bezier(.16,1,.3,1),
-        filter .9s ease;
-    }
-
-
-    /* Кавычки */
-
-    .message::before,
-    .message::after {
-      font-size: .46em;
-      opacity: .58;
-      position: relative;
-    }
-
-    .message::before {
-      content: "“";
-      top: -.45em;
-      margin-right: .08em;
-    }
-
-    .message::after {
-      content: "”";
-      top: .08em;
-      margin-left: .08em;
-    }
-
-
-    /* Появление */
-
-    .message.show {
-      opacity: 1;
-
-      transform:
-        translateY(0)
-        scale(1);
-
-      filter: blur(0);
-    }
-
-
-    /* Исчезновение */
-
-    .message.hide {
-      opacity: 0;
-
-      transform:
-        translateY(-28px)
-        scale(1.015);
-
-      filter: blur(11px);
-    }
-
-
-    /* =========================
-       ЛИНИЯ
-       ========================= */
-
-    .rule {
-      width: 0;
-      height: 1px;
-
-      margin:
-        34px auto 0;
-
-      background:
-        rgba(255,255,255,.55);
-
-      transition:
-        width 1.1s .25s
-        cubic-bezier(.16,1,.3,1),
-        opacity .4s;
-    }
-
-    .message.show + .rule {
-      width:
-        min(240px,22vw);
-    }
-
-
-    /* =========================
-       ВИНЬЕТКА
-       ========================= */
-
-    .vignette {
-      position: fixed;
-      inset: 0;
-
-      z-index: 3;
-
-      box-shadow:
-        inset 0 0 180px
-        rgba(0,0,0,.34);
-
-      pointer-events: none;
-    }
-
-
-    /* =========================
-       АДАПТАЦИЯ
-       ========================= */
-
-    @media (max-aspect-ratio:4/3) {
-
-      .message {
-        font-size:
-          clamp(48px,8vw,105px);
-      }
-
-    }
-  </style>
-</head>
-
-
-<body>
-
-  <!-- ЗАСТАВКА -->
-  <img
-    id="backgroundImage"
-    alt=""
-  >
-
-
-  <!-- Затемнение заставки -->
-  <div
-    class="background-overlay"
-  ></div>
-
-
-  <!-- СООБЩЕНИЕ -->
-  <main
-    class="stage"
-    id="stage"
-  >
-
-    <div class="halo"></div>
-
-    <div>
-
-      <div
-        id="message"
-        class="message"
-      ></div>
-
-      <div
-        class="rule"
-      ></div>
-
-    </div>
-
-  </main>
-
-
-  <!-- Затемнение краёв -->
-  <div
-    class="vignette"
-  ></div>
-
-
-  <script>
-
-    const backgroundImage =
-      document.getElementById(
-        "backgroundImage"
-      );
-
-    const messageElement =
-      document.getElementById(
-        "message"
-      );
-
-    const stage =
-      document.getElementById(
-        "stage"
-      );
-
-
-    let hideTimer = null;
-
-    let lastMessageId = null;
-
-    let lastBackground = null;
-
-
-    /* =========================
-       УСТАНОВКА ЗАСТАВКИ
-       ========================= */
-
-    function setBackground(url) {
-
-      if (!url) {
-
-        backgroundImage.removeAttribute(
-          "src"
-        );
-
-        return;
-      }
-
-      /*
-       * Используем обычный IMG,
-       * а не CSS background-image.
-       */
-
-      backgroundImage.src = url;
-
-    }
-
-
-    /* =========================
-       БЕЗОПАСНЫЙ ТЕКСТ
-       ========================= */
-
-    function escapeHtml(text) {
-
-      return String(text).replace(
-        /[&<>'"]/g,
-
-        character => ({
-
-          "&": "&amp;",
-
-          "<": "&lt;",
-
-          ">": "&gt;",
-
-          "'": "&#39;",
-
-          '"': "&quot;"
-
-        })[character]
-
-      );
-
-    }
-
-
-    /* =========================
-       ПОКАЗ СООБЩЕНИЯ
-       ========================= */
-
-    function showMessage(message) {
-
-      clearTimeout(
-        hideTimer
-      );
-
-
-      messageElement.className =
-        "message";
-
-
-      messageElement.innerHTML =
-        escapeHtml(
-          message.text
-        );
-
-
-      stage.classList.add(
-        "has-message"
-      );
-
-
-      requestAnimationFrame(
-        () => {
-
-          requestAnimationFrame(
-            () => {
-
-              messageElement
-                .classList
-                .add("show");
-
-            }
-          );
-
-        }
-      );
-
-    }
-
-
-    /* =========================
-       СКРЫТИЕ СООБЩЕНИЯ
-       ========================= */
-
-    function hideMessage() {
-
-      clearTimeout(
-        hideTimer
-      );
-
-
-      messageElement
-        .classList
-        .remove("show");
-
-
-      messageElement
-        .classList
-        .add("hide");
-
-
-      stage
-        .classList
-        .remove(
-          "has-message"
-        );
-
-
-      hideTimer =
-        setTimeout(
-          () => {
-
-            messageElement
-              .textContent = "";
-
-
-            messageElement
-              .className =
-              "message";
-
-          },
-
-          1000
-        );
-
-    }
-
-
-    /* =========================
-       СИНХРОНИЗАЦИЯ
-       ========================= */
-
-    async function sync() {
-
-      try {
-
-        const response =
-          await fetch(
-
-            "/api/public-state?t=" +
-            Date.now(),
-
-            {
-              cache: "no-store"
-            }
-
-          );
-
-
-        if (!response.ok) {
-
-          console.error(
-            "Ошибка API:",
-            response.status
-          );
-
-          return;
-        }
-
-
-        const state =
-          await response.json();
-
-
-        /* -------------------------
-           ЗАСТАВКА
-           ------------------------- */
-
-        if (
-          state.background !==
-          lastBackground
-        ) {
-
-          lastBackground =
-            state.background;
-
-
-          setBackground(
-            state.background
-          );
-
-        }
-
-
-        /* -------------------------
-           СООБЩЕНИЕ
-           ------------------------- */
-
-        const currentMessageId =
-          state.activeMessage?.id
-          || null;
-
-
-        if (
-          currentMessageId !==
-          lastMessageId
-        ) {
-
-          lastMessageId =
-            currentMessageId;
-
-
-          if (
-            state.activeMessage
-          ) {
-
-            showMessage(
-              state.activeMessage
-            );
-
-          }
-
-          else {
-
-            hideMessage();
-
-          }
-
-        }
-
-      }
-
-      catch (error) {
-
-        console.error(
-          "Ошибка синхронизации:",
-          error
-        );
-
-      }
-
-    }
-
-
-    /* Первый запрос */
-
-    sync();
-
-
-    /* Проверяем изменения */
-
-    setInterval(
-      sync,
-      700
-    );
-
   </script>
 
 </body>
