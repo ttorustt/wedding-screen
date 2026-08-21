@@ -3,464 +3,75 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-
-  <title>Wedding Screen</title>
-
-  <link rel="stylesheet" href="/app.css">
+  <title>Wedding Screen Test</title>
 
   <style>
-    html,
-    body {
+    html, body {
+      margin: 0;
       width: 100%;
       height: 100%;
-      margin: 0;
-      overflow: hidden;
       background: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
     }
 
-    /* ЗАСТАВКА */
-    .bg {
+    #bg {
       position: fixed;
       inset: 0;
-      z-index: 0;
-
-      background-color: #000;
       background-position: center;
       background-size: cover;
       background-repeat: no-repeat;
-
-      transition: background-image .3s ease;
+      z-index: 0;
     }
 
-    .bg:before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-
-      background:
-        linear-gradient(
-          180deg,
-          rgba(0,0,0,.12),
-          rgba(0,0,0,.34)
-        );
-    }
-
-    .bg:after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-    }
-
-    /* ОСНОВНОЙ ЭКРАН */
-    .stage {
+    #debug {
       position: fixed;
-      inset: 0;
-      z-index: 2;
-
-      display: grid;
-      place-items: center;
-
-      padding: 7vw;
-    }
-
-    /* СВЕЧЕНИЕ ЗА СООБЩЕНИЕМ */
-    .halo {
-      position: absolute;
-
-      width: 75vw;
-      height: 45vw;
-
-      border-radius: 50%;
-
-      background:
-        radial-gradient(
-          ellipse,
-          rgba(0,0,0,.28),
-          transparent 68%
-        );
-
-      filter: blur(20px);
-
-      opacity: 0;
-
-      transition: opacity .8s ease;
-    }
-
-    .stage.has-message .halo {
-      opacity: 1;
-    }
-
-    /* СООБЩЕНИЕ */
-    .message {
-      position: relative;
-
-      max-width: 1500px;
-
-      text-align: center;
-
-      font:
-        500 clamp(54px,7vw,132px)/.98
-        "Cormorant Garamond",
-        serif;
-
-      text-wrap: balance;
-
-      text-shadow:
-        0 6px 40px rgba(0,0,0,.55);
-
-      opacity: 0;
-
-      transform:
-        translateY(42px)
-        scale(.97);
-
-      filter: blur(14px);
-
-      transition:
-        opacity .9s cubic-bezier(.16,1,.3,1),
-        transform 1.05s cubic-bezier(.16,1,.3,1),
-        filter .9s ease;
-    }
-
-    .message:before,
-    .message:after {
-      font-size: .46em;
-      opacity: .58;
-      position: relative;
-    }
-
-    .message:before {
-      content: "“";
-      top: -.45em;
-      margin-right: .08em;
-    }
-
-    .message:after {
-      content: "”";
-      top: .08em;
-      margin-left: .08em;
-    }
-
-    .message.show {
-      opacity: 1;
-      transform: none;
-      filter: blur(0);
-    }
-
-    .message.hide {
-      opacity: 0;
-
-      transform:
-        translateY(-28px)
-        scale(1.015);
-
-      filter: blur(11px);
-    }
-
-    /* ЛИНИЯ ПОД СООБЩЕНИЕМ */
-    .rule {
-      width: 0;
-      height: 1px;
-
-      background:
-        rgba(255,255,255,.55);
-
-      margin:
-        34px auto 0;
-
-      transition:
-        width 1.1s .25s
-        cubic-bezier(.16,1,.3,1),
-        opacity .4s;
-    }
-
-    .message.show + .rule {
-      width: min(240px,22vw);
-    }
-
-    /* ЗАТЕМНЕНИЕ КРАЁВ */
-    .vignette {
-      position: fixed;
-      inset: 0;
-      z-index: 3;
-
-      box-shadow:
-        inset 0 0 180px
-        rgba(0,0,0,.34);
-
-      pointer-events: none;
-    }
-
-    @media (max-aspect-ratio: 4/3) {
-      .message {
-        font-size:
-          clamp(48px,8vw,105px);
-      }
+      z-index: 10;
+      left: 20px;
+      right: 20px;
+      bottom: 20px;
+      padding: 20px;
+      background: rgba(0,0,0,.8);
+      color: #fff;
+      font-size: 18px;
+      word-break: break-all;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- ЗАСТАВКА -->
-  <div class="bg" id="bg"></div>
-
-  <div class="noise"></div>
-
-  <!-- СООБЩЕНИЯ -->
-  <main
-    class="stage"
-    id="stage"
-  >
-
-    <div class="halo"></div>
-
-    <div>
-      <div
-        id="message"
-        class="message"
-      ></div>
-
-      <div class="rule"></div>
-    </div>
-
-  </main>
-
-  <div class="vignette"></div>
+  <div id="bg"></div>
+  <div id="debug">Загрузка...</div>
 
   <script>
+    const bg = document.getElementById("bg");
+    const debug = document.getElementById("debug");
 
-    const bg =
-      document.getElementById("bg");
-
-    const el =
-      document.getElementById("message");
-
-    const stage =
-      document.getElementById("stage");
-
-
-    let timer;
-
-    let lastId = null;
-
-    let lastBg = null;
-
-
-    /* =========================
-       ЗАСТАВКА
-       ========================= */
-
-    function setBackground(url) {
-
-      if (!url) {
-
-        bg.style.backgroundImage =
-          "none";
-
-        return;
-      }
-
-      /*
-        Сразу передаём URL браузеру.
-
-        Не ждём image.onload.
-        Поэтому браузер начинает
-        загружать заставку немедленно.
-      */
-
-      bg.style.backgroundImage =
-        `url("${url}")`;
-
-    }
-
-
-    /* =========================
-       БЕЗОПАСНЫЙ ТЕКСТ
-       ========================= */
-
-    function escapeHtml(text) {
-
-      return text.replace(
-        /[&<>'"]/g,
-        char => ({
-          "&": "&amp;",
-          "<": "&lt;",
-          ">": "&gt;",
-          "'": "&#39;",
-          '"': "&quot;"
-        }[char])
-      );
-
-    }
-
-
-    /* =========================
-       ПОКАЗАТЬ СООБЩЕНИЕ
-       ========================= */
-
-    function showMessage(message) {
-
-      clearTimeout(timer);
-
-      el.className =
-        "message";
-
-      el.innerHTML =
-        escapeHtml(message.text);
-
-      stage.classList.add(
-        "has-message"
-      );
-
-      requestAnimationFrame(() => {
-
-        requestAnimationFrame(() => {
-
-          el.classList.add(
-            "show"
-          );
-
+    async function test() {
+      try {
+        const response = await fetch("/api/public-state?test=" + Date.now(), {
+          cache: "no-store"
         });
 
-      });
+        const state = await response.json();
 
-    }
+        debug.innerHTML =
+          "BACKGROUND URL:<br><br>" +
+          (state.background || "ПУСТО");
 
-
-    /* =========================
-       УБРАТЬ СООБЩЕНИЕ
-       ========================= */
-
-    function hideMessage() {
-
-      clearTimeout(timer);
-
-      el.classList.remove(
-        "show"
-      );
-
-      el.classList.add(
-        "hide"
-      );
-
-      stage.classList.remove(
-        "has-message"
-      );
-
-      timer =
-        setTimeout(() => {
-
-          el.textContent = "";
-
-          el.className =
-            "message";
-
-        }, 1000);
-
-    }
-
-
-    /* =========================
-       СИНХРОНИЗАЦИЯ
-       ========================= */
-
-    async function sync() {
-
-      try {
-
-        const response =
-          await fetch(
-            "/api/public-state",
-            {
-              cache: "no-store"
-            }
-          );
-
-
-        if (!response.ok) {
-          return;
+        if (state.background) {
+          bg.style.backgroundImage =
+            'url("' + state.background + '")';
         }
 
-
-        const state =
-          await response.json();
-
-
-        /* ЗАСТАВКА */
-
-        if (
-          state.background !==
-          lastBg
-        ) {
-
-          lastBg =
-            state.background;
-
-          setBackground(
-            state.background
-          );
-
-        }
-
-
-        /* СООБЩЕНИЕ */
-
-        const id =
-          state.activeMessage?.id
-          || null;
-
-
-        if (id !== lastId) {
-
-          lastId = id;
-
-
-          if (
-            state.activeMessage
-          ) {
-
-            showMessage(
-              state.activeMessage
-            );
-
-          } else {
-
-            hideMessage();
-
-          }
-
-        }
-
+      } catch (error) {
+        debug.innerHTML =
+          "ОШИБКА:<br><br>" + error.message;
       }
-
-      catch (error) {
-
-        console.error(
-          "Ошибка синхронизации:",
-          error
-        );
-
-      }
-
     }
 
-
-    /* ПЕРВЫЙ ЗАПУСК */
-
-    sync();
-
-
-    /* ПРОВЕРЯЕМ НОВЫЕ
-       СООБЩЕНИЯ КАЖДЫЕ 700 мс */
-
-    setInterval(
-      sync,
-      700
-    );
-
+    test();
   </script>
 
 </body>
