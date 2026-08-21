@@ -3,38 +3,102 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-
-  <title>Wedding Screen</title>
-
-  <link rel="stylesheet" href="/app.css">
+  <title>Wedding Screen Diagnostic</title>
 
   <style>
-    html,
-    body {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      overflow: hidden;
-      background: #000;
+    html,body{
+      margin:0;
+      width:100%;
+      height:100%;
+      background:#111;
+      color:#fff;
+      font-family:Arial,sans-serif;
+      overflow:hidden;
     }
 
-    /* =========================
-       ЗАСТАВКА
-       ========================= */
+    #photo{
+      position:fixed;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      z-index:1;
+    }
 
-    #backgroundImage {
-      position: fixed;
-      inset: 0;
+    #info{
+      position:fixed;
+      z-index:9999;
+      left:20px;
+      right:20px;
+      bottom:20px;
+      background:rgba(0,0,0,.9);
+      padding:18px;
+      border-radius:12px;
+      font-size:16px;
+      line-height:1.5;
+      word-break:break-all;
+    }
+  </style>
+</head>
 
-      width: 100%;
-      height: 100%;
+<body>
 
-      object-fit: cover;
-      object-position: center;
+  <img id="photo" alt="">
 
-      z-index: 0;
+  <div id="info">
+    Проверяем...
+  </div>
 
-      display: block;
+  <script>
+    const photo = document.getElementById('photo');
+    const info = document.getElementById('info');
+
+    async function run() {
+      try {
+        const response = await fetch(
+          '/api/public-state?t=' + Date.now(),
+          { cache: 'no-store' }
+        );
+
+        const state = await response.json();
+        const url = state.background;
+
+        info.innerHTML =
+          'URL получен:<br>' + url +
+          '<br><br>Ждём загрузку картинки...';
+
+        photo.onload = () => {
+          info.innerHTML =
+            '✅ КАРТИНКА ЗАГРУЗИЛАСЬ' +
+            '<br>Размер: ' +
+            photo.naturalWidth +
+            ' × ' +
+            photo.naturalHeight +
+            '<br><br>URL:<br>' +
+            photo.currentSrc;
+        };
+
+        photo.onerror = () => {
+          info.innerHTML =
+            '❌ ERROR — картинка не загрузилась' +
+            '<br><br>URL:<br>' +
+            url;
+        };
+
+        photo.src = url;
+
+      } catch (e) {
+        info.innerHTML =
+          '❌ Ошибка API:<br>' +
+          e.message;
+      }
+    }
+
+    run();
+  </script>
+
+</body>
+</html>      display: block;
 
       opacity: 1;
     }
