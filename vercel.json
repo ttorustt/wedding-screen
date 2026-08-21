@@ -4,6 +4,7 @@
     { "source": "/", "destination": "/guest.html" },
     { "source": "/guest", "destination": "/guest.html" },
     { "source": "/admin", "destination": "/admin.html" },
-    { "source": "/screen", "destination": "/screen.html" }
+    { "source": "/screen", "destination": "/screen.html" },
+    { "source": "/api/:path*", "destination": "/api/index.js" }
   ]
 }
