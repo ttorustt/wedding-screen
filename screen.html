@@ -1,41 +1,495 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Wedding Screen</title><link rel="stylesheet" href="/app.css"><style>
-html,body{wihtml,body{
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  background:#000;
-}
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Wedding Screen</title>
 
-.bg{
-  position:fixed;
-  inset:0;
-  z-index:0;
-  background-position:center;
-  background-size:cover;
-  background-repeat:no-repeat;
-}
+  <link rel="stylesheet" href="/app.css">
 
-.bg:before{
-  z-index:1;
-  background:linear-gradient(180deg,rgba(0,0,0,.12),rgba(0,0,0,.34));
-}
+  <style>
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #000;
+    }
 
-.bg:after{
-  z-index:1;
-}
+    /* Фоновая заставка */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
 
-.stage{
-  position:fixed;
-  inset:0;
-  z-index:2;
-  display:grid;
-  place-items:center;
-  padding:7vw;
-}
+      background-color: #191816;
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
 
-.vignette{
-  z-index:3;
-}dth:100%;height:100%;overflow:hidden}.bg:before{background:linear-gradient(180deg,rgba(0,0,0,.12),rgba(0,0,0,.34))}.stage{position:fixed;inset:0;display:grid;place-items:center;padding:7vw}.halo{position:absolute;width:75vw;height:45vw;border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.28),transparent 68%);filter:blur(20px);opacity:0;transition:opacity .8s ease}.stage.has-message .halo{opacity:1}.message{position:relative;max-width:1500px;text-align:center;font:500 clamp(54px,7vw,132px)/.98 "Cormorant Garamond",serif;text-wrap:balance;text-shadow:0 6px 40px rgba(0,0,0,.55);opacity:0;transform:translateY(42px) scale(.97);filter:blur(14px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform 1.05s cubic-bezier(.16,1,.3,1),filter .9s ease}.message:before,.message:after{font-size:.46em;opacity:.58;position:relative}.message:before{content:'“';top:-.45em;margin-right:.08em}.message:after{content:'”';top:.08em;margin-left:.08em}.message.show{opacity:1;transform:none;filter:blur(0)}.message.hide{opacity:0;transform:translateY(-28px) scale(1.015);filter:blur(11px)}.rule{width:0;height:1px;background:rgba(255,255,255,.55);margin:34px auto 0;transition:width 1.1s .25s cubic-bezier(.16,1,.3,1),opacity .4s}.message.show+.rule{width:min(240px,22vw)}.vignette{position:fixed;inset:0;box-shadow:inset 0 0 180px rgba(0,0,0,.34);pointer-events:none}@media(max-aspect-ratio:4/3){.message{font-size:clamp(48px,8vw,105px)}}
-</style></head><body><div class="bg" id="bg"></div><div class="noise"></div><main class="stage" id="stage"><div class="halo"></div><div><div id="message" class="message"></div><div class="rule"></div></div></main><div class="vignette"></div><script>
-const bg=document.getElementById('bg'),el=document.getElementById('message'),stage=document.getElementById('stage');let timer;function setBg(u){if(u)bg.style.backgroundImage=`url('${u}')`}function esc(s){return s.replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}function showMessage(m){clearTimeout(timer);el.className='message';el.innerHTML=esc(m.text);stage.classList.add('has-message');requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('show')))}function hideMessage(){clearTimeout(timer);el.classList.remove('show');el.classList.add('hide');stage.classList.remove('has-message');timer=setTimeout(()=>{el.textContent='';el.className='message'},1000)}let lastId=null,lastBg=null;async function sync(){try{const r=await fetch('/api/public-state',{cache:'no-store'});if(!r.ok)return;const s=await r.json();if(s.background!==lastBg){lastBg=s.background;setBg(s.background)}const id=s.activeMessage?.id||null;if(id!==lastId){lastId=id;if(s.activeMessage)showMessage(s.activeMessage);else hideMessage()}}catch{}}sync();setInterval(sync,700);
-</script></body></html>
+      transition:
+        background-image .85s ease,
+        opacity .6s ease;
+
+      opacity: 1;
+    }
+
+    /* Затемнение заставки для читаемости текста */
+    .bg::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(0, 0, 0, .12),
+          rgba(0, 0, 0, .34)
+        );
+    }
+
+    /* Лёгкая обработка картинки */
+    .bg::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+
+      backdrop-filter: saturate(.92);
+      -webkit-backdrop-filter: saturate(.92);
+    }
+
+    /* Область сообщения */
+    .stage {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+
+      display: grid;
+      place-items: center;
+
+      padding: 7vw;
+      pointer-events: none;
+    }
+
+    /* Затемнение непосредственно за сообщением */
+    .halo {
+      position: absolute;
+
+      width: 75vw;
+      height: 45vw;
+
+      border-radius: 50%;
+
+      background:
+        radial-gradient(
+          ellipse,
+          rgba(0, 0, 0, .28),
+          transparent 68%
+        );
+
+      filter: blur(20px);
+
+      opacity: 0;
+
+      transition: opacity .8s ease;
+    }
+
+    .stage.has-message .halo {
+      opacity: 1;
+    }
+
+    /* Сам текст сообщения */
+    .message {
+      position: relative;
+
+      max-width: 1500px;
+
+      text-align: center;
+
+      font:
+        500
+        clamp(54px, 7vw, 132px) / .98
+        "Cormorant Garamond",
+        serif;
+
+      text-wrap: balance;
+
+      color: #fff;
+
+      text-shadow:
+        0 6px 40px rgba(0, 0, 0, .55);
+
+      opacity: 0;
+
+      transform:
+        translateY(42px)
+        scale(.97);
+
+      filter: blur(14px);
+
+      transition:
+        opacity .9s cubic-bezier(.16, 1, .3, 1),
+        transform 1.05s cubic-bezier(.16, 1, .3, 1),
+        filter .9s ease;
+    }
+
+    /* Кавычки */
+    .message::before,
+    .message::after {
+      font-size: .46em;
+      opacity: .58;
+      position: relative;
+    }
+
+    .message::before {
+      content: "“";
+      top: -.45em;
+      margin-right: .08em;
+    }
+
+    .message::after {
+      content: "”";
+      top: .08em;
+      margin-left: .08em;
+    }
+
+    /* Появление сообщения */
+    .message.show {
+      opacity: 1;
+      transform: none;
+      filter: blur(0);
+    }
+
+    /* Исчезновение сообщения */
+    .message.hide {
+      opacity: 0;
+
+      transform:
+        translateY(-28px)
+        scale(1.015);
+
+      filter: blur(11px);
+    }
+
+    /* Декоративная линия */
+    .rule {
+      width: 0;
+      height: 1px;
+
+      margin: 34px auto 0;
+
+      background:
+        rgba(255, 255, 255, .55);
+
+      opacity: 1;
+
+      transition:
+        width 1.1s .25s cubic-bezier(.16, 1, .3, 1),
+        opacity .4s;
+    }
+
+    .message.show + .rule {
+      width: min(240px, 22vw);
+    }
+
+    /* Затемнение краёв экрана */
+    .vignette {
+      position: fixed;
+      inset: 0;
+      z-index: 3;
+
+      box-shadow:
+        inset 0 0 180px rgba(0, 0, 0, .34);
+
+      pointer-events: none;
+    }
+
+    /* Шум / текстура поверх изображения */
+    .noise {
+      z-index: 4;
+      pointer-events: none;
+    }
+
+    @media (max-aspect-ratio: 4/3) {
+      .message {
+        font-size:
+          clamp(48px, 8vw, 105px);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Фоновая заставка -->
+  <div
+    class="bg"
+    id="bg"
+  ></div>
+
+  <!-- Лёгкая текстура -->
+  <div class="noise"></div>
+
+  <!-- Сообщение -->
+  <main
+    class="stage"
+    id="stage"
+  >
+
+    <div class="halo"></div>
+
+    <div>
+
+      <div
+        id="message"
+        class="message"
+      ></div>
+
+      <div class="rule"></div>
+
+    </div>
+
+  </main>
+
+  <div class="vignette"></div>
+
+  <script>
+    const bg =
+      document.getElementById("bg");
+
+    const messageElement =
+      document.getElementById("message");
+
+    const stage =
+      document.getElementById("stage");
+
+    let hideTimer = null;
+
+    let lastMessageId = null;
+    let lastBackground = null;
+
+
+    /*
+     * Устанавливаем заставку.
+     */
+    function setBackground(url) {
+
+      if (!url) {
+        bg.style.backgroundImage = "none";
+        return;
+      }
+
+      /*
+       * Предварительно загружаем картинку,
+       * чтобы она не мигала при смене.
+       */
+      const image = new Image();
+
+      image.onload = () => {
+        bg.style.backgroundImage =
+          `url("${url}")`;
+      };
+
+      image.onerror = () => {
+        console.error(
+          "Не удалось загрузить заставку:",
+          url
+        );
+      };
+
+      image.src = url;
+    }
+
+
+    /*
+     * Защищаем текст сообщения перед
+     * вставкой в HTML.
+     */
+    function escapeHtml(text) {
+
+      return String(text).replace(
+        /[&<>'"]/g,
+        character => ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          "'": "&#39;",
+          '"': "&quot;"
+        })[character]
+      );
+    }
+
+
+    /*
+     * Показываем сообщение.
+     */
+    function showMessage(message) {
+
+      clearTimeout(hideTimer);
+
+      messageElement.className =
+        "message";
+
+      messageElement.innerHTML =
+        escapeHtml(message.text);
+
+      stage.classList.add(
+        "has-message"
+      );
+
+      /*
+       * Два requestAnimationFrame нужны,
+       * чтобы браузер гарантированно
+       * запустил CSS-анимацию.
+       */
+      requestAnimationFrame(() => {
+
+        requestAnimationFrame(() => {
+
+          messageElement.classList.add(
+            "show"
+          );
+
+        });
+
+      });
+    }
+
+
+    /*
+     * Убираем сообщение.
+     */
+    function hideMessage() {
+
+      clearTimeout(hideTimer);
+
+      messageElement.classList.remove(
+        "show"
+      );
+
+      messageElement.classList.add(
+        "hide"
+      );
+
+      stage.classList.remove(
+        "has-message"
+      );
+
+      hideTimer = setTimeout(() => {
+
+        messageElement.textContent = "";
+
+        messageElement.className =
+          "message";
+
+      }, 1000);
+    }
+
+
+    /*
+     * Получаем актуальное состояние
+     * от сервера.
+     */
+    async function sync() {
+
+      try {
+
+        const response = await fetch(
+          "/api/public-state",
+          {
+            cache: "no-store"
+          }
+        );
+
+        if (!response.ok) {
+
+          console.error(
+            "Ошибка API:",
+            response.status
+          );
+
+          return;
+        }
+
+        const state =
+          await response.json();
+
+
+        /*
+         * Проверяем заставку.
+         */
+        if (
+          state.background !==
+          lastBackground
+        ) {
+
+          lastBackground =
+            state.background;
+
+          setBackground(
+            state.background
+          );
+        }
+
+
+        /*
+         * Проверяем сообщение.
+         */
+        const currentMessageId =
+          state.activeMessage?.id || null;
+
+        if (
+          currentMessageId !==
+          lastMessageId
+        ) {
+
+          lastMessageId =
+            currentMessageId;
+
+          if (state.activeMessage) {
+
+            showMessage(
+              state.activeMessage
+            );
+
+          } else {
+
+            hideMessage();
+
+          }
+        }
+
+      } catch (error) {
+
+        console.error(
+          "Ошибка синхронизации:",
+          error
+        );
+      }
+    }
+
+
+    /*
+     * Первый запрос сразу после
+     * открытия страницы.
+     */
+    sync();
+
+
+    /*
+     * Проверяем изменения каждые
+     * 700 миллисекунд.
+     */
+    setInterval(
+      sync,
+      700
+    );
+  </script>
+
+</body>
+</html>
