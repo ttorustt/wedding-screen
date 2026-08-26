@@ -2,12 +2,10 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8">
-
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover"
   >
-
   <meta name="theme-color" content="#0d0c0b">
 
   <title>Ваша история</title>
@@ -16,596 +14,403 @@
     rel="preconnect"
     href="https://fonts.googleapis.com"
   >
-
   <link
     rel="preconnect"
     href="https://fonts.gstatic.com"
     crossorigin
   >
-
   <link
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Inter:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   >
 
   <style>
-
-    /* =========================================================
-       БАЗОВЫЕ НАСТРОЙКИ
-    ========================================================= */
-
-    * {
-      box-sizing: border-box;
+    *{
+      box-sizing:border-box;
     }
 
-    html {
-      min-height: 100%;
-      background: #0d0c0b;
+    html,
+    body{
+      margin:0;
+      min-height:100%;
+      background:#0d0c0b;
+      color:#f4efe8;
+      font-family:"Inter",Arial,sans-serif;
     }
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      color: #f4efe8;
-      font-family: "Inter", Arial, sans-serif;
-      overflow-x: hidden;
-      background: #0d0c0b;
+    body{
+      min-height:100vh;
+      overflow-x:hidden;
     }
 
-
-    /* =========================================================
-       ФОН
-
-       ВАЖНО:
-       файл guest-bg.png должен лежать в корне GitHub
-       рядом с guest.html
-    ========================================================= */
-
-    .guest-bg {
-      position: fixed;
-      inset: 0;
-
-      z-index: 0;
+    .guest-bg{
+      position:fixed;
+      inset:0;
+      z-index:0;
 
       background-image:
         linear-gradient(
           180deg,
-          rgba(0, 0, 0, 0.08) 0%,
-          rgba(0, 0, 0, 0.18) 45%,
-          rgba(0, 0, 0, 0.30) 100%
+          rgba(0,0,0,.06),
+          rgba(0,0,0,.18) 50%,
+          rgba(0,0,0,.32)
         ),
-        url("/guest-bg.png");
+        url("/guest-bf.png");
 
-      background-position: center center;
-      background-size: cover;
-      background-repeat: no-repeat;
-
-      pointer-events: none;
+      background-position:center center;
+      background-size:cover;
+      background-repeat:no-repeat;
     }
 
-
-    /* Лёгкая виньетка по краям */
-
-    .guest-bg::after {
-      content: "";
-      position: absolute;
-      inset: 0;
+    .guest-bg::after{
+      content:"";
+      position:absolute;
+      inset:0;
 
       background:
         radial-gradient(
           ellipse at center,
-          transparent 30%,
-          rgba(0,0,0,.12) 70%,
-          rgba(0,0,0,.32) 100%
+          transparent 35%,
+          rgba(0,0,0,.16) 70%,
+          rgba(0,0,0,.38) 100%
         );
-
-      pointer-events: none;
     }
 
+    .page{
+      position:relative;
+      z-index:2;
 
-    /* =========================================================
-       ОСНОВНАЯ ОБЛАСТЬ
-    ========================================================= */
-
-    .page {
-      position: relative;
-      z-index: 2;
-
-      width: min(860px, calc(100% - 32px));
-
-      margin: 0 auto;
+      width:min(860px,calc(100% - 30px));
+      margin:0 auto;
 
       padding:
-        max(32px, env(safe-area-inset-top))
+        max(30px,env(safe-area-inset-top))
         0
-        max(60px, env(safe-area-inset-bottom));
+        max(60px,env(safe-area-inset-bottom));
     }
 
-
-    /* =========================================================
-       ЛОГОТИП
-    ========================================================= */
-
-    .logo-wrap {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      margin: 0 auto 22px;
+    .logo-wrap{
+      display:flex;
+      justify-content:center;
+      margin-bottom:18px;
     }
 
-    .logo {
-      display: block;
-
-      width: min(220px, 56vw);
-      height: auto;
-
-      object-fit: contain;
+    .logo{
+      width:min(220px,58vw);
+      height:auto;
+      display:block;
+      object-fit:contain;
     }
 
-
-    /* =========================================================
-       ЗАГОЛОВОК
-    ========================================================= */
-
-    .hero {
-      text-align: center;
-      margin-bottom: 26px;
+    .hero{
+      text-align:center;
+      margin-bottom:24px;
     }
 
-    .title {
-      margin: 0;
+    .title{
+      margin:0;
 
-      font-family: "Cormorant Garamond", Georgia, serif;
+      font-family:"Cormorant Garamond",Georgia,serif;
+      font-size:clamp(46px,8vw,74px);
+      font-weight:500;
+      line-height:.95;
 
-      font-size: clamp(48px, 8vw, 76px);
-      font-weight: 500;
-      line-height: .92;
+      letter-spacing:.05em;
+      text-transform:uppercase;
 
-      letter-spacing: .04em;
-
-      color: #f6f1ea;
-
-      text-transform: uppercase;
-
-      text-shadow:
-        0 3px 20px rgba(0,0,0,.35);
+      color:#fff;
+      text-shadow:0 5px 30px rgba(0,0,0,.38);
     }
 
-    .subtitle {
-      margin: 10px 0 0;
+    .subtitle{
+      margin-top:10px;
 
-      font-family: "Cormorant Garamond", Georgia, serif;
+      font-family:"Cormorant Garamond",Georgia,serif;
+      font-size:clamp(18px,3vw,23px);
+      font-weight:500;
 
-      font-size: clamp(18px, 3vw, 23px);
-      font-weight: 500;
-
-      color: #d7b98f;
+      color:#d8ba92;
     }
 
-
-    /* =========================================================
-       ИНСТРУКЦИЯ
-    ========================================================= */
-
-    .steps {
-      display: grid;
-      gap: 10px;
-
-      margin-top: 26px;
+    .steps{
+      display:grid;
+      gap:10px;
     }
 
-    .step {
-      display: grid;
-      grid-template-columns: 58px 1fr;
-      align-items: center;
-      gap: 18px;
+    .step{
+      display:grid;
+      grid-template-columns:58px 1fr;
+      align-items:center;
+      gap:18px;
 
-      padding: 15px 18px;
+      padding:15px 18px;
 
-      border: 1px solid rgba(208, 171, 119, .45);
-      border-radius: 13px;
+      border:1px solid rgba(208,171,119,.45);
+      border-radius:13px;
 
-      background: rgba(12, 11, 10, .58);
+      background:rgba(12,11,10,.58);
 
-      backdrop-filter: blur(7px);
-      -webkit-backdrop-filter: blur(7px);
-
-      box-shadow:
-        0 8px 30px rgba(0,0,0,.10);
+      backdrop-filter:blur(7px);
+      -webkit-backdrop-filter:blur(7px);
     }
 
-    .step-number {
-      width: 52px;
-      height: 52px;
+    .step-number{
+      width:52px;
+      height:52px;
 
-      display: grid;
-      place-items: center;
+      display:grid;
+      place-items:center;
 
-      border: 1px solid rgba(215, 185, 143, .55);
-      border-radius: 12px;
+      border:1px solid rgba(215,185,143,.55);
+      border-radius:12px;
 
-      font-family: "Cormorant Garamond", Georgia, serif;
+      font-family:"Cormorant Garamond",Georgia,serif;
+      font-size:30px;
+      font-weight:500;
 
-      font-size: 30px;
-      font-weight: 500;
-
-      color: #dbc19b;
+      color:#dbc19b;
     }
 
-    .step-content {
-      min-width: 0;
+    .step-title{
+      margin-bottom:5px;
+
+      color:#fff;
+      font-size:15px;
+      font-weight:700;
     }
 
-    .step-title {
-      margin-bottom: 5px;
-
-      font-size: 15px;
-      font-weight: 700;
-
-      color: #f5f0e9;
+    .step-text{
+      color:rgba(245,240,233,.82);
+      font-size:13px;
+      line-height:1.5;
     }
 
-    .step-text {
-      font-size: 13px;
-      line-height: 1.5;
-
-      color: rgba(245, 240, 233, .78);
+    .step-example{
+      grid-template-columns:58px 1fr auto;
     }
 
+    .example{
+      min-width:220px;
 
-    /* =========================================================
-       ВТОРОЙ ПУНКТ + ПРИМЕР
-    ========================================================= */
+      padding:12px 18px;
 
-    .step-example {
-      grid-template-columns: 58px 1fr auto;
+      border-radius:11px;
+
+      background:#dfc09a;
+      color:#211b16;
+
+      text-align:center;
+      font-size:12px;
+      font-weight:600;
     }
 
-    .example {
-      min-width: 220px;
+    .example em{
+      display:block;
+      margin-bottom:3px;
 
-      padding: 12px 18px;
-
-      text-align: center;
-
-      border-radius: 11px;
-
-      background: #dfc09a;
-
-      color: #211b16;
-
-      font-size: 12px;
-      font-weight: 600;
+      font-family:"Cormorant Garamond",Georgia,serif;
+      font-size:16px;
+      font-weight:600;
     }
 
-    .example em {
-      display: block;
+    .guess{
+      margin-top:11px;
+      padding:14px 18px;
 
-      margin-bottom: 3px;
+      text-align:center;
 
-      font-family: "Cormorant Garamond", Georgia, serif;
-      font-size: 16px;
-      font-weight: 600;
+      border:1px solid rgba(208,171,119,.45);
+      border-radius:13px;
+
+      background:rgba(12,11,10,.58);
+
+      backdrop-filter:blur(7px);
+      -webkit-backdrop-filter:blur(7px);
     }
 
+    .guess-main{
+      font-family:"Cormorant Garamond",Georgia,serif;
+      font-size:clamp(20px,3.5vw,27px);
+      font-weight:500;
 
-    /* =========================================================
-       БЛОК ПРО МОЛОДОЖЁНОВ
-    ========================================================= */
-
-    .guess {
-      margin-top: 11px;
-
-      padding: 14px 18px;
-
-      text-align: center;
-
-      border: 1px solid rgba(208, 171, 119, .45);
-      border-radius: 13px;
-
-      background: rgba(12, 11, 10, .58);
-
-      backdrop-filter: blur(7px);
-      -webkit-backdrop-filter: blur(7px);
+      color:#f3eee7;
     }
 
-    .guess-main {
-      font-family: "Cormorant Garamond", Georgia, serif;
+    .guess-sub{
+      margin-top:4px;
 
-      font-size: clamp(20px, 3.5vw, 27px);
-      font-weight: 500;
-
-      color: #f3eee7;
+      font-size:11px;
+      color:#cbb28e;
     }
 
-    .guess-sub {
-      margin-top: 4px;
+    .secret{
+      margin:17px 0 16px;
 
-      font-size: 11px;
+      text-align:center;
 
-      color: #cbb28e;
+      font-family:"Cormorant Garamond",Georgia,serif;
+      font-size:clamp(20px,3.5vw,26px);
+      font-style:italic;
+      font-weight:500;
+
+      color:#d8b991;
     }
 
+    .form-card{
+      overflow:hidden;
 
-    /* =========================================================
-       НЕ ВЫДАВАЙТЕ СЕБЯ
-    ========================================================= */
+      border:1px solid rgba(208,171,119,.46);
+      border-radius:14px;
 
-    .secret {
-      margin: 17px 0 16px;
+      background:rgba(10,9,8,.62);
 
-      text-align: center;
-
-      font-family: "Cormorant Garamond", Georgia, serif;
-
-      font-size: clamp(20px, 3.5vw, 26px);
-      font-style: italic;
-      font-weight: 500;
-
-      color: #d8b991;
+      backdrop-filter:blur(9px);
+      -webkit-backdrop-filter:blur(9px);
     }
 
+    textarea{
+      display:block;
 
-    /* =========================================================
-       ФОРМА
-    ========================================================= */
+      width:100%;
+      min-height:180px;
 
-    .form-card {
-      padding: 0;
+      padding:22px 20px 12px;
 
-      overflow: hidden;
+      border:0;
+      outline:0;
 
-      border: 1px solid rgba(208, 171, 119, .46);
-      border-radius: 14px;
+      resize:none;
 
-      background: rgba(10, 9, 8, .62);
+      background:transparent;
+      color:#f7f2eb;
 
-      backdrop-filter: blur(9px);
-      -webkit-backdrop-filter: blur(9px);
+      font-family:"Inter",Arial,sans-serif;
+      font-size:16px;
+      line-height:1.55;
     }
 
-    .textarea-wrap {
-      padding: 0;
+    textarea::placeholder{
+      color:rgba(213,184,143,.42);
     }
 
-    textarea {
-      display: block;
+    .form-bottom{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
 
-      width: 100%;
-      min-height: 180px;
+      gap:15px;
 
-      padding: 22px 20px 12px;
-
-      border: 0;
-      outline: 0;
-
-      resize: none;
-
-      background: transparent;
-
-      color: #f7f2eb;
-
-      font-family: "Inter", Arial, sans-serif;
-      font-size: 16px;
-      line-height: 1.55;
+      padding:10px 14px 14px 18px;
     }
 
-    textarea::placeholder {
-      color: rgba(213, 184, 143, .42);
+    .count{
+      font-size:10px;
+      color:rgba(245,240,233,.55);
     }
 
+    .send{
+      min-width:160px;
 
-    /* =========================================================
-       НИЖНЯЯ ЧАСТЬ ФОРМЫ
-    ========================================================= */
+      padding:13px 24px;
 
-    .form-bottom {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      border:0;
+      border-radius:11px;
 
-      gap: 15px;
+      background:#dfc09a;
+      color:#211b16;
 
-      padding: 10px 14px 14px 18px;
+      font-size:12px;
+      font-weight:700;
+
+      text-transform:uppercase;
+
+      cursor:pointer;
     }
 
-    .count {
-      font-size: 10px;
-
-      color: rgba(245, 240, 233, .55);
+    .send:active{
+      transform:scale(.97);
     }
 
-    .send {
-      min-width: 160px;
-
-      padding: 13px 24px;
-
-      border: 0;
-      border-radius: 11px;
-
-      background: #dfc09a;
-
-      color: #211b16;
-
-      font-size: 12px;
-      font-weight: 700;
-
-      text-transform: uppercase;
-
-      cursor: pointer;
-
-      transition:
-        transform .18s ease,
-        opacity .18s ease,
-        background .18s ease;
+    .send:disabled{
+      opacity:.55;
     }
 
-    .send:hover {
-      background: #ebcda7;
+    .toast{
+      min-height:26px;
+      margin-top:14px;
+
+      text-align:center;
+
+      font-size:13px;
+      color:#d7b98f;
     }
 
-    .send:active {
-      transform: scale(.97);
+    .toast.success{
+      color:#f6f1e9;
     }
 
-    .send:disabled {
-      opacity: .55;
-      cursor: default;
-    }
-
-
-    /* =========================================================
-       СООБЩЕНИЕ ПОСЛЕ ОТПРАВКИ
-    ========================================================= */
-
-    .toast {
-      min-height: 26px;
-
-      margin-top: 14px;
-
-      text-align: center;
-
-      font-size: 13px;
-
-      color: #d7b98f;
-    }
-
-    .toast.success {
-      color: #f6f1e9;
-    }
-
-
-    /* =========================================================
-       МОБИЛЬНАЯ ВЕРСИЯ
-    ========================================================= */
-
-    @media (max-width: 650px) {
-
-      .page {
-        width: min(100% - 22px, 860px);
-
-        padding-top:
-          max(22px, env(safe-area-inset-top));
+    @media(max-width:650px){
+      .page{
+        width:min(100% - 22px,860px);
       }
 
-      .logo {
-        width: min(180px, 48vw);
+      .logo{
+        width:min(180px,50vw);
       }
 
-      .logo-wrap {
-        margin-bottom: 18px;
+      .title{
+        font-size:clamp(42px,13vw,60px);
       }
 
-      .hero {
-        margin-bottom: 20px;
+      .step{
+        grid-template-columns:47px 1fr;
+        gap:12px;
+        padding:13px;
       }
 
-      .title {
-        font-size: clamp(43px, 13vw, 62px);
+      .step-number{
+        width:44px;
+        height:44px;
+        font-size:26px;
       }
 
-      .subtitle {
-        font-size: 18px;
+      .step-example{
+        grid-template-columns:47px 1fr;
       }
 
-      .steps {
-        margin-top: 20px;
+      .example{
+        grid-column:1 / -1;
+        min-width:0;
+        width:100%;
       }
 
-      .step {
-        grid-template-columns: 47px 1fr;
-
-        gap: 12px;
-
-        padding: 13px;
+      textarea{
+        min-height:160px;
       }
 
-      .step-number {
-        width: 44px;
-        height: 44px;
-
-        font-size: 26px;
-      }
-
-      .step-title {
-        font-size: 14px;
-      }
-
-      .step-text {
-        font-size: 12px;
-      }
-
-      .step-example {
-        grid-template-columns: 47px 1fr;
-      }
-
-      .example {
-        grid-column: 1 / -1;
-
-        min-width: 0;
-
-        margin-top: 2px;
-      }
-
-      .guess {
-        padding: 13px 10px;
-      }
-
-      .guess-main {
-        font-size: 20px;
-      }
-
-      .secret {
-        font-size: 20px;
-      }
-
-      textarea {
-        min-height: 160px;
-
-        padding: 18px 16px 10px;
-
-        font-size: 15px;
-      }
-
-      .form-bottom {
-        padding: 8px 10px 11px 15px;
-      }
-
-      .send {
-        min-width: 130px;
-
-        padding: 12px 17px;
-
-        font-size: 11px;
+      .send{
+        min-width:130px;
+        padding:12px 17px;
       }
     }
-
   </style>
 </head>
 
-
 <body>
 
-  <!-- ФОН -->
   <div class="guest-bg"></div>
-
 
   <main class="page">
 
-    <!-- ЛОГОТИП -->
     <div class="logo-wrap">
       <img
-        class="logo"
         src="/logo.png"
+        class="logo"
         alt="Другое Event Agency"
       >
     </div>
 
-
-    <!-- ЗАГОЛОВОК -->
     <header class="hero">
-
       <h1 class="title">
         Ваша история
       </h1>
@@ -613,22 +418,14 @@
       <div class="subtitle">
         Давайте зашифруем самые яркие моменты!
       </div>
-
     </header>
 
-
-    <!-- ИНСТРУКЦИЯ -->
     <section class="steps">
 
-      <!-- 1 -->
       <div class="step">
+        <div class="step-number">1</div>
 
-        <div class="step-number">
-          1
-        </div>
-
-        <div class="step-content">
-
+        <div>
           <div class="step-title">
             Вспомните историю
           </div>
@@ -637,21 +434,13 @@
             Желательно интересную или смешную, которая произошла
             с вами и молодожёнами — с обоими или с одним из них.
           </div>
-
         </div>
-
       </div>
 
-
-      <!-- 2 -->
       <div class="step step-example">
+        <div class="step-number">2</div>
 
-        <div class="step-number">
-          2
-        </div>
-
-        <div class="step-content">
-
+        <div>
           <div class="step-title">
             Зашифруйте её
           </div>
@@ -659,32 +448,18 @@
           <div class="step-text">
             Тремя словами или словосочетаниями — как вам удобнее.
           </div>
-
         </div>
-
 
         <div class="example">
-
-          <em>
-            Например:
-          </em>
-
+          <em>Например:</em>
           море • 3 утра • домашнее вино
-
         </div>
-
       </div>
 
-
-      <!-- 3 -->
       <div class="step">
+        <div class="step-number">3</div>
 
-        <div class="step-number">
-          3
-        </div>
-
-        <div class="step-content">
-
+        <div>
           <div class="step-title">
             Впишите их в поле ниже
           </div>
@@ -692,17 +467,12 @@
           <div class="step-text">
             И нажмите «Отправить».
           </div>
-
         </div>
-
       </div>
 
     </section>
 
-
-    <!-- УГАДЫВАНИЕ -->
     <section class="guess">
-
       <div class="guess-main">
         ✧ Молодожёны попытаются отгадать, чья это история
       </div>
@@ -710,29 +480,19 @@
       <div class="guess-sub">
         Чем неожиданнее подсказки, тем интереснее будет угадывать!
       </div>
-
     </section>
 
-
-    <!-- СЕКРЕТ -->
     <div class="secret">
       Не выдавайте себя раньше времени 🤫
     </div>
 
-
-    <!-- ФОРМА -->
     <section class="form-card">
 
-      <div class="textarea-wrap">
-
-        <textarea
-          id="text"
-          maxlength="500"
-          placeholder="Например: море, 3 утра, домашнее вино"
-        ></textarea>
-
-      </div>
-
+      <textarea
+        id="text"
+        maxlength="500"
+        placeholder="Например: море, 3 утра, домашнее вино"
+      ></textarea>
 
       <div class="form-bottom">
 
@@ -752,7 +512,6 @@
 
     </section>
 
-
     <div
       class="toast"
       id="toast"
@@ -760,107 +519,61 @@
 
   </main>
 
-
   <script>
-
-    const text =
-      document.getElementById("text");
-
-    const count =
-      document.getElementById("count");
-
-    const send =
-      document.getElementById("send");
-
-    const toast =
-      document.getElementById("toast");
-
-
-    /* СЧЁТЧИК СИМВОЛОВ */
+    const text = document.getElementById("text");
+    const count = document.getElementById("count");
+    const send = document.getElementById("send");
+    const toast = document.getElementById("toast");
 
     text.addEventListener("input", () => {
-
-      count.textContent =
-        text.value.length;
-
+      count.textContent = text.value.length;
     });
-
-
-    /* ОТПРАВКА */
 
     send.addEventListener("click", async () => {
 
-      const value =
-        text.value.trim();
-
+      const value = text.value.trim();
 
       if (!value) {
-
         toast.className = "toast";
-
         toast.textContent =
           "Сначала впишите три слова или словосочетания";
-
         return;
       }
 
-
       send.disabled = true;
-
-      send.textContent =
-        "Отправляем…";
-
+      send.textContent = "Отправляем…";
       toast.textContent = "";
-
 
       try {
 
-        const response =
-          await fetch("/api/messages", {
+        const response = await fetch("/api/messages", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            text: value
+          })
+        });
 
-            method: "POST",
-
-            headers: {
-              "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-              text: value
-            })
-
-          });
-
-
-        const data =
-          await response.json();
-
+        const data = await response.json();
 
         if (!response.ok) {
-
           throw new Error(
-            data.error ||
-            "Не удалось отправить"
+            data.error || "Не удалось отправить"
           );
-
         }
 
-
         text.value = "";
-
         count.textContent = "0";
 
-        toast.className =
-          "toast success";
-
+        toast.className = "toast success";
         toast.textContent =
           "Готово ✦ История отправлена";
 
-
       } catch (error) {
 
-        toast.className =
-          "toast";
-
+        toast.className = "toast";
         toast.textContent =
           error.message ||
           "Не удалось отправить. Попробуйте ещё раз.";
@@ -868,14 +581,11 @@
       } finally {
 
         send.disabled = false;
-
-        send.textContent =
-          "Отправить";
+        send.textContent = "Отправить";
 
       }
 
     });
-
   </script>
 
 </body>
