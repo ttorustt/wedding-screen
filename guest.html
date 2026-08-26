@@ -5,673 +5,685 @@
 
   <meta
     name="viewport"
-    content="width=device-width,initial-scale=1,viewport-fit=cover"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
   >
 
-  <meta
-    name="theme-color"
-    content="#0d0c0b"
-  >
+  <meta name="theme-color" content="#0d0c0b">
 
   <title>Ваша история</title>
 
   <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  >
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Inter:wght@400;500;600;700&display=swap"
     rel="stylesheet"
-    href="/app.css"
   >
 
   <style>
 
-    :root{
-      --cream:#f4eee5;
-      --beige:#d7bea0;
-      --line:rgba(218,190,154,.36);
-      --muted:rgba(244,238,229,.72);
+    /* =========================================================
+       БАЗОВЫЕ НАСТРОЙКИ
+    ========================================================= */
+
+    * {
+      box-sizing: border-box;
     }
 
-    *{
-      box-sizing:border-box;
+    html {
+      min-height: 100%;
+      background: #0d0c0b;
     }
 
-    html,
-    body{
-      margin:0;
-      width:100%;
-      min-height:100%;
-      background:#090909;
-      color:var(--cream);
-
-      font-family:
-        Inter,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: #f4efe8;
+      font-family: "Inter", Arial, sans-serif;
+      overflow-x: hidden;
+      background: #0d0c0b;
     }
 
-    body{
-      min-height:100vh;
 
-      padding:
-        max(24px,env(safe-area-inset-top))
-        16px
-        max(40px,env(safe-area-inset-bottom));
+    /* =========================================================
+       ФОН
 
-      overflow-x:hidden;
-    }
+       ВАЖНО:
+       файл guest-bg.png должен лежать в корне GitHub
+       рядом с guest.html
+    ========================================================= */
 
-    /* ФОН */
+    .guest-bg {
+      position: fixed;
+      inset: 0;
 
-    .guest-bg{
-      position:fixed;
-      inset:0;
-      z-index:-10;
+      z-index: 0;
 
       background-image:
         linear-gradient(
           180deg,
-          rgba(0,0,0,.22),
-          rgba(0,0,0,.62)
+          rgba(0, 0, 0, 0.08) 0%,
+          rgba(0, 0, 0, 0.18) 45%,
+          rgba(0, 0, 0, 0.30) 100%
         ),
-        url("/ChatGPT%20Image%2026%20авг.%202026%20г.,%2016_13_34.png");
+        url("/guest-bg.png");
 
-      background-position:center;
-      background-size:cover;
-      background-repeat:no-repeat;
+      background-position: center center;
+      background-size: cover;
+      background-repeat: no-repeat;
+
+      pointer-events: none;
     }
 
-    .guest-bg::after{
-      content:"";
-      position:absolute;
-      inset:0;
+
+    /* Лёгкая виньетка по краям */
+
+    .guest-bg::after {
+      content: "";
+      position: absolute;
+      inset: 0;
 
       background:
         radial-gradient(
           ellipse at center,
-          transparent 35%,
-          rgba(0,0,0,.56) 100%
+          transparent 30%,
+          rgba(0,0,0,.12) 70%,
+          rgba(0,0,0,.32) 100%
         );
+
+      pointer-events: none;
     }
 
-    .grain{
-      position:fixed;
-      inset:0;
 
-      pointer-events:none;
-      z-index:20;
+    /* =========================================================
+       ОСНОВНАЯ ОБЛАСТЬ
+    ========================================================= */
 
-      opacity:.045;
+    .page {
+      position: relative;
+      z-index: 2;
 
-      background-image:
-        url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+      width: min(860px, calc(100% - 32px));
+
+      margin: 0 auto;
+
+      padding:
+        max(32px, env(safe-area-inset-top))
+        0
+        max(60px, env(safe-area-inset-bottom));
     }
 
-    .wrap{
-      width:min(880px,100%);
-      margin:0 auto;
 
-      position:relative;
-      z-index:2;
+    /* =========================================================
+       ЛОГОТИП
+    ========================================================= */
+
+    .logo-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      margin: 0 auto 22px;
     }
 
-    /* ЛОГОТИП */
+    .logo {
+      display: block;
 
-    .logo-wrap{
-      display:flex;
-      justify-content:center;
+      width: min(220px, 56vw);
+      height: auto;
 
-      margin:
-        0 auto 10px;
+      object-fit: contain;
     }
 
-    .logo{
-      width:
-        clamp(190px,36vw,300px);
 
-      display:block;
+    /* =========================================================
+       ЗАГОЛОВОК
+    ========================================================= */
 
-      filter:
-        brightness(1.2)
-        contrast(1.1);
-
-      mix-blend-mode:screen;
+    .hero {
+      text-align: center;
+      margin-bottom: 26px;
     }
 
-    /* ЗАГОЛОВОК */
+    .title {
+      margin: 0;
 
-    .title{
-      margin:
-        6px 0 7px;
+      font-family: "Cormorant Garamond", Georgia, serif;
 
-      text-align:center;
+      font-size: clamp(48px, 8vw, 76px);
+      font-weight: 500;
+      line-height: .92;
 
-      color:white;
+      letter-spacing: .04em;
 
-      font:
-        500
-        clamp(40px,8vw,72px)/.95
-        "Cormorant Garamond",
-        Georgia,
-        serif;
+      color: #f6f1ea;
 
-      letter-spacing:.07em;
-
-      text-transform:uppercase;
+      text-transform: uppercase;
 
       text-shadow:
-        0 8px 40px
-        rgba(0,0,0,.55);
+        0 3px 20px rgba(0,0,0,.35);
     }
 
-    .lead{
-      margin:
-        0 auto 26px;
+    .subtitle {
+      margin: 10px 0 0;
 
-      text-align:center;
+      font-family: "Cormorant Garamond", Georgia, serif;
 
-      color:var(--beige);
+      font-size: clamp(18px, 3vw, 23px);
+      font-weight: 500;
 
-      font-size:
-        clamp(14px,2.4vw,17px);
-
-      line-height:1.45;
+      color: #d7b98f;
     }
 
-    /* ШАГИ */
 
-    .steps{
-      display:grid;
-      gap:10px;
+    /* =========================================================
+       ИНСТРУКЦИЯ
+    ========================================================= */
+
+    .steps {
+      display: grid;
+      gap: 10px;
+
+      margin-top: 26px;
     }
 
-    .step{
-      display:grid;
+    .step {
+      display: grid;
+      grid-template-columns: 58px 1fr;
+      align-items: center;
+      gap: 18px;
 
-      grid-template-columns:
-        74px 1fr;
+      padding: 15px 18px;
 
-      align-items:center;
+      border: 1px solid rgba(208, 171, 119, .45);
+      border-radius: 13px;
 
-      gap:18px;
+      background: rgba(12, 11, 10, .58);
 
-      padding:
-        17px 20px;
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
 
-      border:
-        1px solid
-        var(--line);
-
-      border-radius:14px;
-
-      background:
-        linear-gradient(
-          135deg,
-          rgba(24,21,18,.82),
-          rgba(12,11,10,.70)
-        );
-
-      backdrop-filter:
-        blur(14px);
-
-      -webkit-backdrop-filter:
-        blur(14px);
+      box-shadow:
+        0 8px 30px rgba(0,0,0,.10);
     }
 
-    .step-number{
-      width:58px;
-      height:58px;
+    .step-number {
+      width: 52px;
+      height: 52px;
 
-      display:grid;
-      place-items:center;
+      display: grid;
+      place-items: center;
 
-      border-radius:16px;
+      border: 1px solid rgba(215, 185, 143, .55);
+      border-radius: 12px;
 
-      border:
-        1px solid
-        rgba(216,189,153,.52);
+      font-family: "Cormorant Garamond", Georgia, serif;
 
-      color:var(--beige);
+      font-size: 30px;
+      font-weight: 500;
 
-      font:
-        600
-        38px/1
-        "Cormorant Garamond",
-        Georgia,
-        serif;
+      color: #dbc19b;
     }
 
-    .step-title{
-      margin-bottom:5px;
-
-      color:#fff;
-
-      font-size:17px;
-      font-weight:600;
+    .step-content {
+      min-width: 0;
     }
 
-    .step-text{
-      color:
-        rgba(244,238,229,.84);
+    .step-title {
+      margin-bottom: 5px;
 
-      font-size:14px;
-      line-height:1.55;
+      font-size: 15px;
+      font-weight: 700;
+
+      color: #f5f0e9;
     }
 
-    .step-two{
-      grid-template-columns:
-        74px
-        minmax(0,1fr)
-        auto;
+    .step-text {
+      font-size: 13px;
+      line-height: 1.5;
+
+      color: rgba(245, 240, 233, .78);
     }
 
-    .example{
-      min-width:245px;
 
-      padding:
-        12px 16px;
+    /* =========================================================
+       ВТОРОЙ ПУНКТ + ПРИМЕР
+    ========================================================= */
 
-      border-radius:12px;
-
-      background:
-        linear-gradient(
-          135deg,
-          #dbc4a8,
-          #bea183
-        );
-
-      color:#17120f;
-
-      text-align:center;
+    .step-example {
+      grid-template-columns: 58px 1fr auto;
     }
 
-    .example-label{
-      display:block;
+    .example {
+      min-width: 220px;
 
-      margin-bottom:3px;
+      padding: 12px 18px;
 
-      font:
-        italic
-        500 15px/1.1
-        "Cormorant Garamond",
-        Georgia,
-        serif;
+      text-align: center;
+
+      border-radius: 11px;
+
+      background: #dfc09a;
+
+      color: #211b16;
+
+      font-size: 12px;
+      font-weight: 600;
     }
 
-    .example-value{
-      font-size:13px;
-      font-weight:700;
+    .example em {
+      display: block;
+
+      margin-bottom: 3px;
+
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 16px;
+      font-weight: 600;
     }
 
-    /* БЛОК УГАДЫВАНИЯ */
 
-    .guess{
-      margin-top:12px;
+    /* =========================================================
+       БЛОК ПРО МОЛОДОЖЁНОВ
+    ========================================================= */
 
-      padding:
-        15px 20px;
+    .guess {
+      margin-top: 11px;
 
-      border-radius:14px;
+      padding: 14px 18px;
 
-      border:
-        1px solid
-        rgba(218,190,154,.48);
+      text-align: center;
 
-      background:
-        rgba(10,9,8,.70);
+      border: 1px solid rgba(208, 171, 119, .45);
+      border-radius: 13px;
 
-      text-align:center;
+      background: rgba(12, 11, 10, .58);
 
-      backdrop-filter:
-        blur(14px);
-
-      -webkit-backdrop-filter:
-        blur(14px);
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
     }
 
-    .guess-main{
-      font:
-        500
-        clamp(20px,4vw,28px)/1.15
-        "Cormorant Garamond",
-        Georgia,
-        serif;
+    .guess-main {
+      font-family: "Cormorant Garamond", Georgia, serif;
 
-      color:#f5eee5;
+      font-size: clamp(20px, 3.5vw, 27px);
+      font-weight: 500;
+
+      color: #f3eee7;
     }
 
-    .guess-sub{
-      margin-top:6px;
+    .guess-sub {
+      margin-top: 4px;
 
-      font-size:12px;
+      font-size: 11px;
 
-      color:var(--beige);
+      color: #cbb28e;
     }
 
-    /* СЕКРЕТ */
 
-    .secret{
-      margin:
-        17px auto;
+    /* =========================================================
+       НЕ ВЫДАВАЙТЕ СЕБЯ
+    ========================================================= */
 
-      text-align:center;
+    .secret {
+      margin: 17px 0 16px;
 
-      color:#d9bea2;
+      text-align: center;
 
-      font:
-        italic
-        500
-        clamp(19px,4vw,25px)/1.2
-        "Cormorant Garamond",
-        Georgia,
-        serif;
+      font-family: "Cormorant Garamond", Georgia, serif;
+
+      font-size: clamp(20px, 3.5vw, 26px);
+      font-style: italic;
+      font-weight: 500;
+
+      color: #d8b991;
     }
 
-    /* ФОРМА */
 
-    .form{
-      border:
-        1px solid
-        rgba(218,190,154,.38);
+    /* =========================================================
+       ФОРМА
+    ========================================================= */
 
-      border-radius:14px;
+    .form-card {
+      padding: 0;
 
-      background:
-        rgba(11,10,9,.70);
+      overflow: hidden;
 
-      backdrop-filter:
-        blur(18px);
+      border: 1px solid rgba(208, 171, 119, .46);
+      border-radius: 14px;
 
-      -webkit-backdrop-filter:
-        blur(18px);
+      background: rgba(10, 9, 8, .62);
 
-      overflow:hidden;
+      backdrop-filter: blur(9px);
+      -webkit-backdrop-filter: blur(9px);
     }
 
-    textarea{
-      display:block;
-
-      width:100%;
-      min-height:145px;
-
-      padding:
-        20px 20px 10px;
-
-      resize:none;
-
-      border:0;
-      outline:0;
-
-      background:transparent;
-
-      color:white;
-
-      font:
-        500 18px/1.5
-        "Cormorant Garamond",
-        Georgia,
-        serif;
+    .textarea-wrap {
+      padding: 0;
     }
 
-    textarea::placeholder{
-      color:
-        rgba(218,190,154,.46);
+    textarea {
+      display: block;
+
+      width: 100%;
+      min-height: 180px;
+
+      padding: 22px 20px 12px;
+
+      border: 0;
+      outline: 0;
+
+      resize: none;
+
+      background: transparent;
+
+      color: #f7f2eb;
+
+      font-family: "Inter", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.55;
     }
 
-    .form-bottom{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-
-      gap:14px;
-
-      padding:
-        10px 14px 14px
-        20px;
+    textarea::placeholder {
+      color: rgba(213, 184, 143, .42);
     }
 
-    .count{
-      color:
-        rgba(244,238,229,.55);
 
-      font-size:11px;
+    /* =========================================================
+       НИЖНЯЯ ЧАСТЬ ФОРМЫ
+    ========================================================= */
+
+    .form-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 15px;
+
+      padding: 10px 14px 14px 18px;
     }
 
-    .send{
-      min-width:170px;
+    .count {
+      font-size: 10px;
 
-      border:0;
-      border-radius:12px;
+      color: rgba(245, 240, 233, .55);
+    }
 
-      padding:
-        14px 24px;
+    .send {
+      min-width: 160px;
 
-      background:
-        linear-gradient(
-          135deg,
-          #dbc3a5,
-          #c3a382
-        );
+      padding: 13px 24px;
 
-      color:#15110e;
+      border: 0;
+      border-radius: 11px;
 
-      font-size:14px;
-      font-weight:800;
+      background: #dfc09a;
 
-      letter-spacing:.04em;
-      text-transform:uppercase;
+      color: #211b16;
 
-      cursor:pointer;
+      font-size: 12px;
+      font-weight: 700;
+
+      text-transform: uppercase;
+
+      cursor: pointer;
 
       transition:
         transform .18s ease,
-        opacity .18s ease;
+        opacity .18s ease,
+        background .18s ease;
     }
 
-    .send:active{
-      transform:scale(.98);
+    .send:hover {
+      background: #ebcda7;
     }
 
-    .send:disabled{
-      opacity:.5;
+    .send:active {
+      transform: scale(.97);
     }
 
-    .toast{
-      min-height:22px;
-
-      margin-top:14px;
-
-      text-align:center;
-
-      font-size:13px;
-
-      color:
-        rgba(244,238,229,.72);
+    .send:disabled {
+      opacity: .55;
+      cursor: default;
     }
 
-    .toast.success{
-      color:#fff;
+
+    /* =========================================================
+       СООБЩЕНИЕ ПОСЛЕ ОТПРАВКИ
+    ========================================================= */
+
+    .toast {
+      min-height: 26px;
+
+      margin-top: 14px;
+
+      text-align: center;
+
+      font-size: 13px;
+
+      color: #d7b98f;
     }
 
-    @media(max-width:680px){
+    .toast.success {
+      color: #f6f1e9;
+    }
 
-      body{
-        padding:
-          20px 12px 34px;
+
+    /* =========================================================
+       МОБИЛЬНАЯ ВЕРСИЯ
+    ========================================================= */
+
+    @media (max-width: 650px) {
+
+      .page {
+        width: min(100% - 22px, 860px);
+
+        padding-top:
+          max(22px, env(safe-area-inset-top));
       }
 
-      .logo{
-        width:
-          min(220px,64vw);
+      .logo {
+        width: min(180px, 48vw);
       }
 
-      .title{
-        font-size:
-          clamp(36px,11vw,52px);
+      .logo-wrap {
+        margin-bottom: 18px;
       }
 
-      .lead{
-        margin-bottom:20px;
+      .hero {
+        margin-bottom: 20px;
       }
 
-      .step{
-        grid-template-columns:
-          50px 1fr;
-
-        gap:12px;
-
-        padding:
-          14px;
+      .title {
+        font-size: clamp(43px, 13vw, 62px);
       }
 
-      .step-number{
-        width:46px;
-        height:46px;
-
-        border-radius:13px;
-
-        font-size:30px;
+      .subtitle {
+        font-size: 18px;
       }
 
-      .step-title{
-        font-size:15px;
+      .steps {
+        margin-top: 20px;
       }
 
-      .step-text{
-        font-size:13px;
+      .step {
+        grid-template-columns: 47px 1fr;
+
+        gap: 12px;
+
+        padding: 13px;
       }
 
-      .step-two{
-        grid-template-columns:
-          50px 1fr;
+      .step-number {
+        width: 44px;
+        height: 44px;
+
+        font-size: 26px;
       }
 
-      .example{
-        grid-column:
-          1 / -1;
-
-        width:100%;
-
-        min-width:0;
-
-        margin-top:2px;
+      .step-title {
+        font-size: 14px;
       }
 
-      textarea{
-        min-height:130px;
-
-        padding:
-          17px 16px 8px;
+      .step-text {
+        font-size: 12px;
       }
 
-      .form-bottom{
-        padding:
-          9px 10px 11px
-          16px;
+      .step-example {
+        grid-template-columns: 47px 1fr;
       }
 
-      .send{
-        min-width:135px;
+      .example {
+        grid-column: 1 / -1;
 
-        padding:
-          13px 17px;
+        min-width: 0;
 
-        font-size:12px;
+        margin-top: 2px;
       }
 
+      .guess {
+        padding: 13px 10px;
+      }
+
+      .guess-main {
+        font-size: 20px;
+      }
+
+      .secret {
+        font-size: 20px;
+      }
+
+      textarea {
+        min-height: 160px;
+
+        padding: 18px 16px 10px;
+
+        font-size: 15px;
+      }
+
+      .form-bottom {
+        padding: 8px 10px 11px 15px;
+      }
+
+      .send {
+        min-width: 130px;
+
+        padding: 12px 17px;
+
+        font-size: 11px;
+      }
     }
 
   </style>
 </head>
 
+
 <body>
 
+  <!-- ФОН -->
   <div class="guest-bg"></div>
-  <div class="grain"></div>
 
-  <main class="wrap">
 
+  <main class="page">
+
+    <!-- ЛОГОТИП -->
     <div class="logo-wrap">
-
       <img
-        src="/logo.png"
         class="logo"
+        src="/logo.png"
         alt="Другое Event Agency"
       >
-
     </div>
 
-    <h1 class="title">
-      Ваша история
-    </h1>
 
-    <p class="lead">
-      Давайте зашифруем самые яркие моменты!
-    </p>
+    <!-- ЗАГОЛОВОК -->
+    <header class="hero">
 
+      <h1 class="title">
+        Ваша история
+      </h1>
+
+      <div class="subtitle">
+        Давайте зашифруем самые яркие моменты!
+      </div>
+
+    </header>
+
+
+    <!-- ИНСТРУКЦИЯ -->
     <section class="steps">
 
+      <!-- 1 -->
       <div class="step">
 
         <div class="step-number">
           1
         </div>
 
-        <div>
+        <div class="step-content">
 
           <div class="step-title">
             Вспомните историю
           </div>
 
           <div class="step-text">
-            Желательно интересную или смешную,
-            которая произошла с вами и молодожёнами —
-            с обоими или с одним из них.
+            Желательно интересную или смешную, которая произошла
+            с вами и молодожёнами — с обоими или с одним из них.
           </div>
 
         </div>
 
       </div>
 
-      <div class="step step-two">
+
+      <!-- 2 -->
+      <div class="step step-example">
 
         <div class="step-number">
           2
         </div>
 
-        <div>
+        <div class="step-content">
 
           <div class="step-title">
             Зашифруйте её
           </div>
 
           <div class="step-text">
-            Тремя словами или словосочетаниями —
-            как вам удобнее.
+            Тремя словами или словосочетаниями — как вам удобнее.
           </div>
 
         </div>
 
+
         <div class="example">
 
-          <span class="example-label">
+          <em>
             Например:
-          </span>
+          </em>
 
-          <span class="example-value">
-            море • 3 утра • домашнее вино
-          </span>
+          море • 3 утра • домашнее вино
 
         </div>
 
       </div>
 
+
+      <!-- 3 -->
       <div class="step">
 
         <div class="step-number">
           3
         </div>
 
-        <div>
+        <div class="step-content">
 
           <div class="step-title">
             Впишите их в поле ниже
@@ -687,41 +699,51 @@
 
     </section>
 
-    <div class="guess">
+
+    <!-- УГАДЫВАНИЕ -->
+    <section class="guess">
 
       <div class="guess-main">
-        ✧ Молодожёны попытаются отгадать,
-        чья это история
+        ✧ Молодожёны попытаются отгадать, чья это история
       </div>
 
       <div class="guess-sub">
-        Чем неожиданнее подсказки,
-        тем интереснее будет угадывать!
+        Чем неожиданнее подсказки, тем интереснее будет угадывать!
       </div>
 
-    </div>
+    </section>
 
+
+    <!-- СЕКРЕТ -->
     <div class="secret">
       Не выдавайте себя раньше времени 🤫
     </div>
 
-    <section class="form">
 
-      <textarea
-        id="text"
-        maxlength="500"
-        placeholder="Например: море, 3 утра, домашнее вино"
-      ></textarea>
+    <!-- ФОРМА -->
+    <section class="form-card">
+
+      <div class="textarea-wrap">
+
+        <textarea
+          id="text"
+          maxlength="500"
+          placeholder="Например: море, 3 утра, домашнее вино"
+        ></textarea>
+
+      </div>
+
 
       <div class="form-bottom">
 
-        <span class="count">
-          <b id="count">0</b> / 500
-        </span>
+        <div class="count">
+          <span id="count">0</span> / 500
+        </div>
 
         <button
           class="send"
           id="send"
+          type="button"
         >
           Отправить
         </button>
@@ -730,12 +752,14 @@
 
     </section>
 
+
     <div
       class="toast"
       id="toast"
     ></div>
 
   </main>
+
 
   <script>
 
@@ -751,107 +775,106 @@
     const toast =
       document.getElementById("toast");
 
-    text.addEventListener(
-      "input",
-      () => {
-        count.textContent =
-          text.value.length;
-      }
-    );
 
-    send.onclick =
-      async () => {
+    /* СЧЁТЧИК СИМВОЛОВ */
 
-        const value =
-          text.value.trim();
+    text.addEventListener("input", () => {
 
-        if(!value){
+      count.textContent =
+        text.value.length;
 
-          toast.textContent =
-            "Сначала впишите три подсказки";
+    });
 
-          toast.className =
-            "toast";
 
-          return;
-        }
+    /* ОТПРАВКА */
 
-        send.disabled =
-          true;
+    send.addEventListener("click", async () => {
 
-        send.textContent =
-          "Отправляем…";
+      const value =
+        text.value.trim();
+
+
+      if (!value) {
+
+        toast.className = "toast";
 
         toast.textContent =
-          "";
+          "Сначала впишите три слова или словосочетания";
 
-        try{
+        return;
+      }
 
-          const response =
-            await fetch(
-              "/api/messages",
-              {
-                method:"POST",
 
-                headers:{
-                  "Content-Type":
-                    "application/json"
-                },
+      send.disabled = true;
 
-                body:
-                  JSON.stringify({
-                    text:value
-                  })
-              }
-            );
+      send.textContent =
+        "Отправляем…";
 
-          const data =
-            await response.json();
+      toast.textContent = "";
 
-          if(!response.ok){
 
-            throw new Error(
-              data.error ||
-              "Не удалось отправить"
-            );
+      try {
 
-          }
+        const response =
+          await fetch("/api/messages", {
 
-          text.value =
-            "";
+            method: "POST",
 
-          count.textContent =
-            "0";
+            headers: {
+              "Content-Type": "application/json"
+            },
 
-          toast.textContent =
-            "Готово. История отправлена ✦";
+            body: JSON.stringify({
+              text: value
+            })
 
-          toast.className =
-            "toast success";
+          });
+
+
+        const data =
+          await response.json();
+
+
+        if (!response.ok) {
+
+          throw new Error(
+            data.error ||
+            "Не удалось отправить"
+          );
 
         }
 
-        catch(error){
 
-          toast.textContent =
-            error.message;
+        text.value = "";
 
-          toast.className =
-            "toast";
+        count.textContent = "0";
 
-        }
+        toast.className =
+          "toast success";
 
-        finally{
+        toast.textContent =
+          "Готово ✦ История отправлена";
 
-          send.disabled =
-            false;
 
-          send.textContent =
-            "Отправить";
+      } catch (error) {
 
-        }
+        toast.className =
+          "toast";
 
-      };
+        toast.textContent =
+          error.message ||
+          "Не удалось отправить. Попробуйте ещё раз.";
+
+      } finally {
+
+        send.disabled = false;
+
+        send.textContent =
+          "Отправить";
+
+      }
+
+    });
 
   </script>
 
