@@ -1,5 +1,727 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#12110f"><title>Сообщение на экран</title><link rel="stylesheet" href="/app.css"><style>
-body{display:grid;place-items:center;padding:24px;overflow-x:hidden}.wrap{width:min(700px,100%);text-align:center;position:relative}.monogram{width:60px;height:60px;border:1px solid rgba(255,255,255,.35);border-radius:50%;display:grid;place-items:center;margin:0 auto 28px;font:500 25px/1 "Cormorant Garamond",serif}.eyebrow{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}.title{font:500 clamp(46px,11vw,82px)/.9 "Cormorant Garamond",serif;margin:0 0 20px;text-wrap:balance}.subtitle{color:var(--muted);line-height:1.65;margin:0 auto 30px;max-width:540px;font-size:14px}.card{padding:12px;border-radius:30px}.inner{border:1px solid rgba(255,255,255,.09);background:rgba(0,0,0,.15);border-radius:22px;padding:8px}.card textarea{width:100%;min-height:170px;resize:none;border:0;outline:0;background:transparent;color:white;font-size:18px;line-height:1.5;padding:16px}textarea::placeholder{color:rgba(255,255,255,.38)}.row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px}.count{font-size:11px;color:var(--muted);padding-left:8px}.send{border:0;border-radius:999px;background:#f5f0e8;color:#171512;padding:13px 24px;font-weight:600;transition:.2s;min-width:132px}.send:active{transform:scale(.98)}.send:disabled{opacity:.5}.toast{margin-top:18px;min-height:22px;font-size:13px;color:var(--muted)}.success{color:#fff;animation:pop .45s ease}@keyframes pop{0%{transform:translateY(6px);opacity:.2}100%{transform:none;opacity:1}}@media(max-width:520px){body{padding:20px}.monogram{margin-bottom:22px}.subtitle{margin-bottom:22px}.card textarea{min-height:150px}.row{align-items:center}}
-</style></head><body><div class="bg" id="bg"></div><div class="noise"></div><main class="wrap"><div class="monogram">W</div><div class="eyebrow">Wedding message</div><h1 class="title">Оставьте несколько слов</h1><p class="subtitle">Пожелание, шутка или тёплое сообщение — оно попадёт организатору и может появиться на большом экране.</p><section class="card glass"><div class="inner"><textarea id="text" maxlength="500" placeholder="Напишите сообщение…"></textarea><div class="row"><span class="count"><b id="count">0</b> / 500</span><button class="send" id="send">Отправить</button></div></div></section><div class="toast" id="toast"></div></main><script>
-const bg=document.getElementById('bg'),text=document.getElementById('text'),count=document.getElementById('count'),send=document.getElementById('send'),toast=document.getElementById('toast');const setBg=u=>{if(u)bg.style.backgroundImage=`url('${u}')`};async function syncBg(){try{const r=await fetch('/api/public-state',{cache:'no-store'});if(r.ok){const s=await r.json();setBg(s.background)}}catch{}}syncBg();setInterval(syncBg,3000);text.addEventListener('input',()=>count.textContent=text.value.length);send.onclick=async()=>{const value=text.value.trim();if(!value){toast.textContent='Сначала напишите сообщение';return}send.disabled=true;send.textContent='Отправляем…';toast.textContent='';try{const r=await fetch('/api/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:value})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Ошибка');text.value='';count.textContent='0';toast.textContent='Готово. Сообщение отправлено ✦';toast.className='toast success'}catch(e){toast.textContent=e.message;toast.className='toast'}finally{send.disabled=false;send.textContent='Отправить'}};
-</script></body></html>
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#12110f">
+
+  <title>История молодожёнов</title>
+
+  <link rel="stylesheet" href="/app.css">
+
+  <style>
+    body{
+      display:grid;
+      place-items:center;
+      padding:28px 20px 44px;
+      overflow-x:hidden;
+    }
+
+    .wrap{
+      width:min(760px,100%);
+      text-align:center;
+      position:relative;
+    }
+
+    .monogram{
+      width:60px;
+      height:60px;
+
+      border:1px solid rgba(255,255,255,.35);
+      border-radius:50%;
+
+      display:grid;
+      place-items:center;
+
+      margin:0 auto 26px;
+
+      font:
+        500 25px/1
+        "Cormorant Garamond",
+        serif;
+    }
+
+    .eyebrow{
+      font-size:10px;
+      letter-spacing:.3em;
+      text-transform:uppercase;
+      color:var(--muted);
+      margin-bottom:16px;
+    }
+
+    .title{
+      font:
+        500 clamp(42px,10vw,76px)/.93
+        "Cormorant Garamond",
+        serif;
+
+      margin:0 0 26px;
+
+      text-wrap:balance;
+    }
+
+    .instructions{
+      display:grid;
+      gap:12px;
+
+      margin:
+        0 auto 22px;
+
+      text-align:left;
+    }
+
+    .instruction{
+      display:grid;
+      grid-template-columns:36px 1fr;
+      gap:13px;
+
+      padding:17px 18px;
+
+      border:
+        1px solid
+        rgba(255,255,255,.11);
+
+      border-radius:18px;
+
+      background:
+        rgba(0,0,0,.18);
+
+      backdrop-filter:
+        blur(16px);
+
+      -webkit-backdrop-filter:
+        blur(16px);
+    }
+
+    .number{
+      width:34px;
+      height:34px;
+
+      display:grid;
+      place-items:center;
+
+      border-radius:50%;
+
+      border:
+        1px solid
+        rgba(255,255,255,.25);
+
+      font:
+        500 17px/1
+        "Cormorant Garamond",
+        serif;
+
+      color:white;
+    }
+
+    .instruction-text{
+      color:
+        rgba(255,255,255,.82);
+
+      font-size:14px;
+      line-height:1.55;
+    }
+
+    .instruction-text strong{
+      color:white;
+      font-weight:600;
+    }
+
+    .example{
+      margin-top:10px;
+
+      padding:11px 13px;
+
+      border-radius:13px;
+
+      background:
+        rgba(255,255,255,.07);
+
+      color:white;
+
+      font:
+        500 15px/1.45
+        "Cormorant Garamond",
+        serif;
+    }
+
+    .challenge{
+      margin:
+        24px auto 10px;
+
+      padding:
+        18px 20px;
+
+      max-width:600px;
+
+      border-radius:18px;
+
+      background:
+        rgba(255,255,255,.06);
+
+      border:
+        1px solid
+        rgba(255,255,255,.12);
+    }
+
+    .challenge-main{
+      font:
+        500 22px/1.2
+        "Cormorant Garamond",
+        serif;
+
+      color:white;
+    }
+
+    .challenge-small{
+      margin-top:8px;
+
+      color:
+        rgba(255,255,255,.62);
+
+      font-size:13px;
+      line-height:1.45;
+    }
+
+    .secret{
+      margin:
+        12px auto 26px;
+
+      font-size:13px;
+
+      color:
+        rgba(255,255,255,.78);
+    }
+
+    .card{
+      padding:12px;
+      border-radius:30px;
+    }
+
+    .inner{
+      border:
+        1px solid
+        rgba(255,255,255,.09);
+
+      background:
+        rgba(0,0,0,.15);
+
+      border-radius:22px;
+
+      padding:8px;
+    }
+
+    .card textarea{
+      width:100%;
+      min-height:140px;
+
+      resize:none;
+
+      border:0;
+      outline:0;
+
+      background:transparent;
+
+      color:white;
+
+      font-size:18px;
+      line-height:1.5;
+
+      padding:16px;
+    }
+
+    textarea::placeholder{
+      color:
+        rgba(255,255,255,.38);
+    }
+
+    .row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+
+      gap:12px;
+
+      padding:8px;
+    }
+
+    .count{
+      font-size:11px;
+
+      color:var(--muted);
+
+      padding-left:8px;
+    }
+
+    .send{
+      border:0;
+
+      border-radius:999px;
+
+      background:#f5f0e8;
+      color:#171512;
+
+      padding:
+        13px 24px;
+
+      font-weight:600;
+
+      transition:.2s;
+
+      min-width:132px;
+    }
+
+    .send:active{
+      transform:
+        scale(.98);
+    }
+
+    .send:disabled{
+      opacity:.5;
+    }
+
+    .toast{
+      margin-top:18px;
+
+      min-height:22px;
+
+      font-size:13px;
+
+      color:var(--muted);
+    }
+
+    .success{
+      color:#fff;
+
+      animation:
+        pop .45s ease;
+    }
+
+    @keyframes pop{
+      0%{
+        transform:
+          translateY(6px);
+
+        opacity:.2;
+      }
+
+      100%{
+        transform:none;
+        opacity:1;
+      }
+    }
+
+    @media(max-width:520px){
+
+      body{
+        padding:
+          22px 16px 36px;
+      }
+
+      .monogram{
+        margin-bottom:22px;
+      }
+
+      .title{
+        margin-bottom:22px;
+      }
+
+      .instruction{
+        grid-template-columns:
+          32px 1fr;
+
+        padding:
+          15px 14px;
+
+        gap:11px;
+      }
+
+      .number{
+        width:30px;
+        height:30px;
+      }
+
+      .instruction-text{
+        font-size:13px;
+      }
+
+      .challenge-main{
+        font-size:20px;
+      }
+
+      .card textarea{
+        min-height:130px;
+      }
+
+      .row{
+        align-items:center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div
+    class="bg"
+    id="bg"
+  ></div>
+
+  <div class="noise"></div>
+
+  <main class="wrap">
+
+    <div class="monogram">
+      W
+    </div>
+
+    <div class="eyebrow">
+      Wedding story
+    </div>
+
+    <h1 class="title">
+      Вспомните вашу историю
+    </h1>
+
+
+    <div class="instructions">
+
+      <div class="instruction">
+
+        <div class="number">
+          1
+        </div>
+
+        <div class="instruction-text">
+
+          Вспомните историю
+          <strong>
+            — желательно интересную или смешную —
+          </strong>
+          которая произошла с вами и молодожёнами:
+          с обоими или с одним из них.
+
+        </div>
+
+      </div>
+
+
+      <div class="instruction">
+
+        <div class="number">
+          2
+        </div>
+
+        <div class="instruction-text">
+
+          Зашифруйте её
+          <strong>
+            тремя словами
+          </strong>
+          или словосочетаниями —
+          как вам удобнее.
+
+          <div class="example">
+            Например:
+            море &nbsp;•&nbsp;
+            3 утра &nbsp;•&nbsp;
+            домашнее вино
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="instruction">
+
+        <div class="number">
+          3
+        </div>
+
+        <div class="instruction-text">
+
+          Впишите эти три подсказки
+          в поле ниже и нажмите
+          <strong>
+            «Отправить»
+          </strong>.
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="challenge">
+
+      <div class="challenge-main">
+        Молодожёны попытаются
+        отгадать, чья это история
+      </div>
+
+      <div class="challenge-small">
+        Чем неожиданнее подсказки,
+        тем интереснее будет угадывать.
+      </div>
+
+    </div>
+
+
+    <div class="secret">
+      Не выдавайте себя раньше времени 🤫
+    </div>
+
+
+    <section class="card glass">
+
+      <div class="inner">
+
+        <textarea
+          id="text"
+          maxlength="500"
+          placeholder="Например: море, 3 утра, домашнее вино"
+        ></textarea>
+
+        <div class="row">
+
+          <span class="count">
+            <b id="count">
+              0
+            </b>
+            / 500
+          </span>
+
+          <button
+            class="send"
+            id="send"
+          >
+            Отправить
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <div
+      class="toast"
+      id="toast"
+    ></div>
+
+  </main>
+
+
+  <script>
+
+    const bg =
+      document.getElementById(
+        "bg"
+      );
+
+    const text =
+      document.getElementById(
+        "text"
+      );
+
+    const count =
+      document.getElementById(
+        "count"
+      );
+
+    const send =
+      document.getElementById(
+        "send"
+      );
+
+    const toast =
+      document.getElementById(
+        "toast"
+      );
+
+
+    function setBg(url){
+
+      if(url){
+
+        bg.style.backgroundImage =
+          `url('${url}')`;
+
+      }
+
+    }
+
+
+    async function syncBg(){
+
+      try{
+
+        const response =
+          await fetch(
+            "/api/public-state",
+            {
+              cache:"no-store"
+            }
+          );
+
+
+        if(response.ok){
+
+          const state =
+            await response.json();
+
+
+          setBg(
+            state.background
+          );
+
+        }
+
+      }
+
+      catch(error){
+
+        console.error(
+          error
+        );
+
+      }
+
+    }
+
+
+    syncBg();
+
+
+    setInterval(
+      syncBg,
+      3000
+    );
+
+
+    text.addEventListener(
+      "input",
+      () => {
+
+        count.textContent =
+          text.value.length;
+
+      }
+    );
+
+
+    send.onclick =
+      async () => {
+
+        const value =
+          text.value.trim();
+
+
+        if(!value){
+
+          toast.textContent =
+            "Сначала напишите три подсказки";
+
+          toast.className =
+            "toast";
+
+          return;
+
+        }
+
+
+        send.disabled =
+          true;
+
+
+        send.textContent =
+          "Отправляем…";
+
+
+        toast.textContent =
+          "";
+
+
+        try{
+
+          const response =
+            await fetch(
+              "/api/messages",
+              {
+                method:"POST",
+
+                headers:{
+                  "Content-Type":
+                    "application/json"
+                },
+
+                body:
+                  JSON.stringify({
+                    text:value
+                  })
+              }
+            );
+
+
+          const data =
+            await response.json();
+
+
+          if(!response.ok){
+
+            throw new Error(
+              data.error ||
+              "Ошибка отправки"
+            );
+
+          }
+
+
+          text.value =
+            "";
+
+
+          count.textContent =
+            "0";
+
+
+          toast.textContent =
+            "Готово. Ваша история отправлена ✦";
+
+
+          toast.className =
+            "toast success";
+
+        }
+
+        catch(error){
+
+          toast.textContent =
+            error.message;
+
+
+          toast.className =
+            "toast";
+
+        }
+
+        finally{
+
+          send.disabled =
+            false;
+
+
+          send.textContent =
+            "Отправить";
+
+        }
+
+      };
+
+  </script>
+
+</body>
+</html>
