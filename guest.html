@@ -1,53 +1,39 @@
+
 <!doctype html>
 <html lang="ru">
 <head>
   <meta charset="utf-8">
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, viewport-fit=cover"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0d0c0b">
+  <title>Твой трек — наш вайб</title>
 
-  <title>Ваша история</title>
-
-  <link
-    rel="preconnect"
-    href="https://fonts.googleapis.com"
-  >
-  <link
-    rel="preconnect"
-    href="https://fonts.gstatic.com"
-    crossorigin
-  >
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Inter:wght@400;500;600;700&display=swap"
-    rel="stylesheet"
-  >
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
-    *{
-      box-sizing:border-box;
+    * {
+      box-sizing: border-box;
     }
 
-    html,
-    body{
-      margin:0;
-      min-height:100%;
-      background:#0d0c0b;
-      color:#f4efe8;
-      font-family:"Inter",Arial,sans-serif;
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: #0d0c0b;
+      color: #f4efe8;
+      font-family: "Inter", Arial, sans-serif;
     }
 
-    body{
-      min-height:100vh;
-      overflow-x:hidden;
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
     }
 
-    .guest-bg{
-      position:fixed;
-      inset:0;
-      z-index:0;
-
+    /* ФОНОВАЯ КАРТИНКА */
+    .guest-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
       background-image:
         linear-gradient(
           180deg,
@@ -56,341 +42,339 @@
           rgba(0,0,0,.32)
         ),
         url("/guest-bf.png");
-
-      background-position:center center;
-      background-size:cover;
-      background-repeat:no-repeat;
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      pointer-events: none;
     }
 
-    .guest-bg::after{
-      content:"";
-      position:absolute;
-      inset:0;
-
-      background:
-        radial-gradient(
-          ellipse at center,
-          transparent 35%,
-          rgba(0,0,0,.16) 70%,
-          rgba(0,0,0,.38) 100%
-        );
+    .guest-bg::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        ellipse at center,
+        transparent 35%,
+        rgba(0,0,0,.16) 70%,
+        rgba(0,0,0,.38) 100%
+      );
     }
 
-    .page{
-      position:relative;
-      z-index:2;
-
-      width:min(860px,calc(100% - 30px));
-      margin:0 auto;
-
-      padding:
-        max(30px,env(safe-area-inset-top))
-        0
-        max(60px,env(safe-area-inset-bottom));
+    /* ОСНОВНОЙ КОНТЕЙНЕР */
+    .page {
+      position: relative;
+      z-index: 2;
+      width: min(860px, calc(100% - 30px));
+      margin: 0 auto;
+      padding: max(30px, env(safe-area-inset-top)) 0
+               max(60px, env(safe-area-inset-bottom));
     }
 
-    .logo-wrap{
-      display:flex;
-      justify-content:center;
-      margin-bottom:18px;
+    /* ЛОГОТИП */
+    .logo-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
     }
 
-    .logo{
-      width:min(220px,58vw);
-      height:auto;
-      display:block;
-      object-fit:contain;
+    .logo {
+      width: min(220px, 58vw);
+      height: auto;
+      display: block;
+      object-fit: contain;
     }
 
-    .hero{
-      text-align:center;
-      margin-bottom:24px;
+    /* ЗАГОЛОВОК */
+    .hero {
+      text-align: center;
+      margin-bottom: 28px;
     }
 
-    .title{
-      margin:0;
-
-      font-family:"Cormorant Garamond",Georgia,serif;
-      font-size:clamp(46px,8vw,74px);
-      font-weight:500;
-      line-height:.95;
-
-      letter-spacing:.05em;
-      text-transform:uppercase;
-
-      color:#fff;
-      text-shadow:0 5px 30px rgba(0,0,0,.38);
+    .eyebrow {
+      margin-bottom: 14px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      color: #d8ba92;
     }
 
-    .subtitle{
-      margin-top:10px;
-
-      font-family:"Cormorant Garamond",Georgia,serif;
-      font-size:clamp(18px,3vw,23px);
-      font-weight:500;
-
-      color:#d8ba92;
+    .title {
+      margin: 0;
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: clamp(48px, 8vw, 78px);
+      font-weight: 500;
+      line-height: .95;
+      letter-spacing: .025em;
+      text-transform: uppercase;
+      color: #fff;
+      text-shadow: 0 5px 30px rgba(0,0,0,.38);
     }
 
-    .steps{
-      display:grid;
-      gap:10px;
+    .subtitle {
+      max-width: 620px;
+      margin: 16px auto 0;
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: clamp(21px, 3vw, 27px);
+      line-height: 1.25;
+      color: #d8ba92;
     }
 
-    .step{
-      display:grid;
-      grid-template-columns:58px 1fr;
-      align-items:center;
-      gap:18px;
-
-      padding:15px 18px;
-
-      border:1px solid rgba(208,171,119,.45);
-      border-radius:13px;
-
-      background:rgba(12,11,10,.58);
-
-      backdrop-filter:blur(7px);
-      -webkit-backdrop-filter:blur(7px);
+    /* ИНСТРУКЦИИ */
+    .steps {
+      display: grid;
+      gap: 12px;
+      margin-top: 28px;
     }
 
-    .step-number{
-      width:52px;
-      height:52px;
-
-      display:grid;
-      place-items:center;
-
-      border:1px solid rgba(215,185,143,.55);
-      border-radius:12px;
-
-      font-family:"Cormorant Garamond",Georgia,serif;
-      font-size:30px;
-      font-weight:500;
-
-      color:#dbc19b;
+    .step {
+      display: grid;
+      grid-template-columns: 64px minmax(0, 1fr);
+      align-items: center;
+      gap: 18px;
+      padding: 18px;
+      border: 1px solid rgba(208,171,119,.45);
+      border-radius: 14px;
+      background: rgba(12,11,10,.64);
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
     }
 
-    .step-title{
-      margin-bottom:5px;
-
-      color:#fff;
-      font-size:15px;
-      font-weight:700;
+    .step-number {
+      width: 58px;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 1px solid rgba(215,185,143,.55);
+      border-radius: 12px;
+      font-family: "Inter", sans-serif;
+      font-size: 25px;
+      font-weight: 500;
+      line-height: 1;
+      color: #dbc19b;
     }
 
-    .step-text{
-      color:rgba(245,240,233,.82);
-      font-size:13px;
-      line-height:1.5;
+    .step-content {
+      min-width: 0;
     }
 
-    .step-example{
-      grid-template-columns:58px 1fr auto;
+    .step-title {
+      margin-bottom: 7px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
     }
 
-    .example{
-      min-width:220px;
-
-      padding:12px 18px;
-
-      border-radius:11px;
-
-      background:#dfc09a;
-      color:#211b16;
-
-      text-align:center;
-      font-size:12px;
-      font-weight:600;
+    .step-text {
+      color: rgba(245,240,233,.82);
+      font-size: 13px;
+      line-height: 1.6;
     }
 
-    .example em{
-      display:block;
-      margin-bottom:3px;
-
-      font-family:"Cormorant Garamond",Georgia,serif;
-      font-size:16px;
-      font-weight:600;
+    /* ПРИМЕР ЗАЯВКИ */
+    .example {
+      margin-top: 12px;
+      padding: 14px 18px;
+      border: 1px solid rgba(208,171,119,.35);
+      border-radius: 12px;
+      background: rgba(223,192,154,.14);
+      text-align: center;
+      color: #f4e6d4;
+      font-size: 13px;
+      line-height: 1.6;
     }
 
-    .guess{
-      margin-top:11px;
-      padding:14px 18px;
-
-      text-align:center;
-
-      border:1px solid rgba(208,171,119,.45);
-      border-radius:13px;
-
-      background:rgba(12,11,10,.58);
-
-      backdrop-filter:blur(7px);
-      -webkit-backdrop-filter:blur(7px);
+    .example strong {
+      color: #dfc09a;
     }
 
-    .guess-main{
-      font-family:"Cormorant Garamond",Georgia,serif;
-      font-size:clamp(20px,3.5vw,27px);
-      font-weight:500;
-
-      color:#f3eee7;
+    /* МОТИВАЦИОННЫЙ БЛОК */
+    .guess {
+      margin-top: 14px;
+      padding: 20px 18px;
+      text-align: center;
+      border: 1px solid rgba(208,171,119,.45);
+      border-radius: 14px;
+      background: rgba(12,11,10,.64);
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
     }
 
-    .guess-sub{
-      margin-top:4px;
-
-      font-size:11px;
-      color:#cbb28e;
+    .guess-main {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: clamp(24px, 4vw, 31px);
+      font-weight: 500;
+      line-height: 1.15;
+      color: #f3eee7;
     }
 
-    .secret{
-      margin:17px 0 16px;
-
-      text-align:center;
-
-      font-family:"Cormorant Garamond",Georgia,serif;
-      font-size:clamp(20px,3.5vw,26px);
-      font-style:italic;
-      font-weight:500;
-
-      color:#d8b991;
+    .guess-sub {
+      margin-top: 8px;
+      font-size: 12px;
+      line-height: 1.6;
+      color: #cbb28e;
     }
 
-    .form-card{
-      overflow:hidden;
-
-      border:1px solid rgba(208,171,119,.46);
-      border-radius:14px;
-
-      background:rgba(10,9,8,.62);
-
-      backdrop-filter:blur(9px);
-      -webkit-backdrop-filter:blur(9px);
+    /* НАДПИСЬ ПЕРЕД ФОРМОЙ */
+    .secret {
+      margin: 24px 0 18px;
+      text-align: center;
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: clamp(24px, 4vw, 30px);
+      font-style: italic;
+      font-weight: 500;
+      color: #d8b991;
     }
 
-    textarea{
-      display:block;
-
-      width:100%;
-      min-height:180px;
-
-      padding:22px 20px 12px;
-
-      border:0;
-      outline:0;
-
-      resize:none;
-
-      background:transparent;
-      color:#f7f2eb;
-
-      font-family:"Inter",Arial,sans-serif;
-      font-size:16px;
-      line-height:1.55;
+    /* ФОРМА ЗАЯВКИ */
+    .form-card {
+      overflow: hidden;
+      border: 1px solid rgba(208,171,119,.46);
+      border-radius: 14px;
+      background: rgba(10,9,8,.72);
+      backdrop-filter: blur(9px);
+      -webkit-backdrop-filter: blur(9px);
     }
 
-    textarea::placeholder{
-      color:rgba(213,184,143,.42);
+    .form-label {
+      display: block;
+      padding: 20px 20px 0;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #dfc09a;
     }
 
-    .form-bottom{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-
-      gap:15px;
-
-      padding:10px 14px 14px 18px;
+    textarea {
+      display: block;
+      width: 100%;
+      min-height: 165px;
+      padding: 20px;
+      border: 0;
+      outline: 0;
+      resize: vertical;
+      background: transparent;
+      color: #f7f2eb;
+      font-family: "Inter", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
     }
 
-    .count{
-      font-size:10px;
-      color:rgba(245,240,233,.55);
+    textarea::placeholder {
+      color: rgba(213,184,143,.5);
     }
 
-    .send{
-      min-width:160px;
-
-      padding:13px 24px;
-
-      border:0;
-      border-radius:11px;
-
-      background:#dfc09a;
-      color:#211b16;
-
-      font-size:12px;
-      font-weight:700;
-
-      text-transform:uppercase;
-
-      cursor:pointer;
+    .form-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 10px 14px 14px 18px;
     }
 
-    .send:active{
-      transform:scale(.97);
+    .count {
+      font-size: 11px;
+      color: rgba(245,240,233,.55);
     }
 
-    .send:disabled{
-      opacity:.55;
+    .send {
+      min-width: 180px;
+      padding: 15px 24px;
+      border: 0;
+      border-radius: 11px;
+      background: #dfc09a;
+      color: #211b16;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background .2s, transform .2s;
     }
 
-    .toast{
-      min-height:26px;
-      margin-top:14px;
-
-      text-align:center;
-
-      font-size:13px;
-      color:#d7b98f;
+    .send:hover {
+      background: #ebcda7;
     }
 
-    .toast.success{
-      color:#f6f1e9;
+    .send:active {
+      transform: scale(.97);
     }
 
-    @media(max-width:650px){
-      .page{
-        width:min(100% - 22px,860px);
+    .send:disabled {
+      opacity: .55;
+      cursor: default;
+    }
+
+    .toast {
+      min-height: 26px;
+      margin-top: 16px;
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #d7b98f;
+    }
+
+    .toast.success {
+      color: #f6f1e9;
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      text-align: center;
+      font-size: 11px;
+      line-height: 1.6;
+      color: rgba(245,240,233,.6);
+    }
+
+    /* МОБИЛЬНАЯ ВЕРСИЯ */
+    @media (max-width: 650px) {
+      .page {
+        width: min(100% - 22px, 860px);
       }
 
-      .logo{
-        width:min(180px,50vw);
+      .logo {
+        width: min(180px, 50vw);
       }
 
-      .title{
-        font-size:clamp(42px,13vw,60px);
+      .title {
+        font-size: clamp(43px, 12vw, 62px);
       }
 
-      .step{
-        grid-template-columns:47px 1fr;
-        gap:12px;
-        padding:13px;
+      .step {
+        grid-template-columns: 52px minmax(0, 1fr);
+        gap: 13px;
+        padding: 14px;
       }
 
-      .step-number{
-        width:44px;
-        height:44px;
-        font-size:26px;
+      .step-number {
+        width: 48px;
+        height: 48px;
+        font-size: 22px;
       }
 
-      .step-example{
-        grid-template-columns:47px 1fr;
+      .step-title {
+        font-size: 14px;
       }
 
-      .example{
-        grid-column:1 / -1;
-        min-width:0;
-        width:100%;
+      .step-text {
+        font-size: 12px;
       }
 
-      textarea{
-        min-height:160px;
+      textarea {
+        min-height: 150px;
       }
 
-      .send{
-        min-width:130px;
-        padding:12px 17px;
+      .send {
+        min-width: 145px;
+        padding: 13px 15px;
+        font-size: 11px;
+      }
+
+      .guess {
+        padding: 17px 14px;
       }
     }
   </style>
@@ -398,104 +382,116 @@
 
 <body>
 
+  <!-- ФОН -->
   <div class="guest-bg"></div>
 
   <main class="page">
 
+    <!-- ЛОГОТИП -->
     <div class="logo-wrap">
       <img
-        src="/logon.png"
+        src="/Logon.png"
         class="logo"
         alt="Другое Event Agency"
       >
     </div>
 
+    <!-- ЗАГОЛОВОК -->
     <header class="hero">
+      <div class="eyebrow">
+        МУЗЫКА ЭТОГО ВЕЧЕРА
+      </div>
+
       <h1 class="title">
-        Ваша история
+        ТВОЙ ТРЕК — НАШ ВАЙБ
       </h1>
 
       <div class="subtitle">
-        Давайте зашифруем самые яркие моменты!
+        Сегодня ты тоже влияешь на музыку этого вечера!
       </div>
     </header>
 
+    <!-- ИНСТРУКЦИЯ -->
     <section class="steps">
 
       <div class="step">
         <div class="step-number">1</div>
-
-        <div>
+        <div class="step-content">
           <div class="step-title">
-            Вспомните историю
+            Вспомни любимый трек
           </div>
-
           <div class="step-text">
-            Желательно интересную или смешную, которая произошла
-            с вами и Ольгой.
+            Тот самый, под который невозможно усидеть на месте.
+            Может быть, это хит из прошлого или песня,
+            которую ты готов слушать на повторе.
           </div>
         </div>
       </div>
 
-      <div class="step step-example">
+      <div class="step">
         <div class="step-number">2</div>
-
-        <div>
+        <div class="step-content">
           <div class="step-title">
-            Зашифруйте её
+            Напиши своё пожелание
           </div>
-
           <div class="step-text">
-            Тремя словами или словосочетаниями — как вам удобнее.
+            Укажи исполнителя и название песни или просто
+            расскажи, какую музыку хочешь услышать.
           </div>
-        </div>
-
-        <div class="example">
-          <em>Например:</em>
-          море • 3 утра • домашнее вино
         </div>
       </div>
 
       <div class="step">
         <div class="step-number">3</div>
-
-        <div>
+        <div class="step-content">
           <div class="step-title">
-            Впишите их в поле ниже
+            Отправь заявку DJ
           </div>
-
           <div class="step-text">
-            И нажмите «Отправить».
+            Твоё пожелание попадёт в музыкальную подборку вечера.
+            DJ постарается учесть его во время дискотеки.
           </div>
         </div>
       </div>
 
     </section>
 
+    <!-- ПРИМЕР -->
+    <div class="example">
+      <strong>Например:</strong>
+      Руки Вверх! — 18 мне уже<br>
+      или «Хочу побольше хитов 2000-х!»
+    </div>
+
+    <!-- МОТИВАЦИОННЫЙ БЛОК -->
     <section class="guess">
       <div class="guess-main">
-        ✧ Ольга попытается отгадать, чья это история
+        ✧ Возможно, именно твой трек следующим взорвёт танцпол!
       </div>
-
       <div class="guess-sub">
-        Чем неожиданнее подсказки, тем интереснее будет угадывать!
+        Делись музыкальными идеями — создадим атмосферу этого вечера вместе.
       </div>
     </section>
 
+    <!-- НАДПИСЬ ПЕРЕД ФОРМОЙ -->
     <div class="secret">
-      Не выдавайте себя раньше времени 🤫
+      Что сегодня играет для тебя? ♫
     </div>
 
+    <!-- ФОРМА -->
     <section class="form-card">
+
+      <label class="form-label" for="text">
+        Твоё музыкальное пожелание
+      </label>
 
       <textarea
         id="text"
         maxlength="500"
-        placeholder="Например: море, 3 утра, домашнее вино"
+        placeholder="Исполнитель — название трека или пожелание по музыке..."
       ></textarea>
 
       <div class="form-bottom">
-
         <div class="count">
           <span id="count">0</span> / 500
         </div>
@@ -505,17 +501,18 @@
           id="send"
           type="button"
         >
-          Отправить
+          Отправить DJ
         </button>
-
       </div>
 
     </section>
 
-    <div
-      class="toast"
-      id="toast"
-    ></div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <div class="footer-note">
+      Музыкальные пожелания учитываются с учётом программы мероприятия.
+      Отправка заявки не гарантирует воспроизведение трека.
+    </div>
 
   </main>
 
@@ -525,18 +522,19 @@
     const send = document.getElementById("send");
     const toast = document.getElementById("toast");
 
+    // Счётчик символов
     text.addEventListener("input", () => {
       count.textContent = text.value.length;
     });
 
+    // Отправка заявки
     send.addEventListener("click", async () => {
-
       const value = text.value.trim();
 
       if (!value) {
         toast.className = "toast";
         toast.textContent =
-          "Сначала впишите три слова или словосочетания";
+          "Сначала напиши название трека или музыкальное пожелание.";
         return;
       }
 
@@ -545,7 +543,6 @@
       toast.textContent = "";
 
       try {
-
         const response = await fetch("/api/messages", {
           method: "POST",
           headers: {
@@ -560,7 +557,7 @@
 
         if (!response.ok) {
           throw new Error(
-            data.error || "Не удалось отправить"
+            data.error || "Не удалось отправить заявку"
           );
         }
 
@@ -569,22 +566,17 @@
 
         toast.className = "toast success";
         toast.textContent =
-          "Готово ✦ История отправлена";
+          "Готово! ♫ Твоё музыкальное пожелание отправлено DJ.";
 
       } catch (error) {
-
         toast.className = "toast";
         toast.textContent =
           error.message ||
-          "Не удалось отправить. Попробуйте ещё раз.";
-
+          "Не удалось отправить заявку. Попробуй ещё раз.";
       } finally {
-
         send.disabled = false;
-        send.textContent = "Отправить";
-
+        send.textContent = "Отправить DJ";
       }
-
     });
   </script>
 
